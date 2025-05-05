@@ -1,0 +1,18 @@
+### Health Check
+GET http://localhost:8000/health
+Accept: application/json
+
+###
+
+### Process Text (Only run if health check passes)
+POST http://localhost:8000/process_text/
+Content-Type: application/json
+
+{
+  "text": "A inteligência artificial está revolucionando diversas indústrias, incluindo a medicina e a educação.",
+  "metadata": {
+    "source": "blog",
+    "author": "João",
+    "category": "tecnologia"
+  }
+}
