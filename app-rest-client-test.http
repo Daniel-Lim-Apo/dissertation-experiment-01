@@ -1,10 +1,16 @@
+### Root Endpoint
+GET http://localhost:8000/
+Accept: application/json
+
+###
+
 ### Health Check
 GET http://localhost:8000/health
 Accept: application/json
 
 ###
 
-### Process Text (Only run if health check passes)
+### Process Text
 POST http://localhost:8000/process_text/
 Content-Type: application/json
 
@@ -16,3 +22,36 @@ Content-Type: application/json
     "category": "tecnologia"
   }
 }
+
+###
+
+### Ollama LLM Test (Manual Prompt)
+POST http://localhost:11434/api/generate
+Content-Type: application/json
+
+{
+  "model": "llama3.2",
+  "prompt": "Resuma o seguinte texto: A IA está mudando o mundo da tecnologia."
+}
+
+###
+
+### Ollama Embedding Test
+POST http://localhost:11434/api/embeddings
+Content-Type: application/json
+
+{
+  "model": "all-minilm",
+  "prompt": "Texto de teste para embedding"
+}
+
+### 🧾 List Installed Ollama Models
+GET http://localhost:11434/api/tags
+Accept: application/json
+
+
+###
+
+### Qdrant List Collections
+GET http://localhost:6333/collections
+Accept: application/json

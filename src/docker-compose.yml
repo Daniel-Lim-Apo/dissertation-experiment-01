@@ -14,6 +14,11 @@ services:
     volumes:
       - ollama-data:/root/.ollama
     restart: unless-stopped
+    entrypoint: >
+      /bin/sh -c "
+        ollama pull llama3 &&
+        ollama serve
+      "
 
   qdrant:
     image: qdrant/qdrant
