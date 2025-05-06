@@ -1,17 +1,17 @@
 ### Root Endpoint
-GET http://localhost:8000/
+GET http://localhost:18000/
 Accept: application/json
 
 ###
 
 ### Health Check
-GET http://localhost:8000/health
+GET http://localhost:18000/health
 Accept: application/json
 
 ###
 
 ### Process Text
-POST http://localhost:8000/process_text/
+POST http://localhost:18000/process_text/
 Content-Type: application/json
 
 {
@@ -23,6 +23,7 @@ Content-Type: application/json
   }
 }
 
+
 ###
 
 ### Ollama LLM Test (Manual Prompt)
@@ -30,7 +31,7 @@ POST http://localhost:11434/api/generate
 Content-Type: application/json
 
 {
-  "model": "llama3.2",
+  "model": "llama3",
   "prompt": "Resuma o seguinte texto: A IA está mudando o mundo da tecnologia."
 }
 

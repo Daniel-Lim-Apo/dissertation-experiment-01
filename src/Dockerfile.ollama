@@ -1,0 +1,16 @@
+# Dockerfile.ollama
+
+FROM ollama/ollama
+
+# Copia o certificado Fortigate para a store de CAs confiáveis
+COPY ./fortigate.crt /usr/local/share/ca-certificates/fortigate-ca.crt
+
+# Atualiza os certificados do sistema
+RUN update-ca-certificates
+
+# Copia o script de inicialização
+# COPY ./start.ollama.sh /start.ollama.sh
+# RUN chmod +x /start.ollama.sh
+
+# Substitui o entrypoint original por nosso script
+# ENTRYPOINT ["/start.ollama.sh"]

@@ -8,7 +8,6 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams
 import httpx
-import asyncio
 
 # ------------------- Configuration -------------------
 

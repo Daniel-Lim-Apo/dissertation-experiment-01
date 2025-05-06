@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+crewai
+qdrant-client
+requests
+langchain-ollama
