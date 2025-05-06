@@ -1,17 +1,21 @@
-research_task:
+summarize_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is 2024.
+    Resuma o seguinte texto 
+    {textToSummarize}
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    Um texto em Português do Brasil
+  agent: writer
 
-reporting_task:
+summarize_paragraph_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Resume para apenas um parágrafo o conteúdo recebido como contexto.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    Um texto em Português do Brasil com apenas um parágrafo.
+  agent: writerparagraph
+
+summarize_phrases_task:
+  description: >
+    Resume para apenas 3 frases o conteúdo recebido como contexto. Sendo uma frase de no máximo 20 palavras para cada evento principal e mais grave do texto.
+  expected_output: >
+    Um texto em Português do Brasil com apenas 3 frases.
+  agent: writereventtopic

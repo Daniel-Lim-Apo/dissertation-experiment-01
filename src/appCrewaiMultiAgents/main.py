@@ -12,6 +12,7 @@ from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, Distance, VectorParams
 import httpx
+from typing import Optional
 
 from crew import PrivacyRareEventCrew
 
@@ -30,6 +31,16 @@ QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 qdrant_client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 app = FastAPI()
 
+# ------------------- Models -------------------
+class TextData(BaseModel):
+    text: str
+    metadata: Dict[str, str]
+
+class TextDataResult(BaseModel):
+    summary: Optional[str] = None
+    paragraph: Optional[str] = None
+    phrases: Optional[str] = None
+
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
@@ -42,9 +53,10 @@ async def health_check():
     return {"status": "healthy"}
 
 @app.post("/process_text/")
-# async def process_text(data: TextData):
-async def process_text():
+async def process_text(data: TextData):
+# async def process_text():
     try:
+        summary = run(data.text)
         # summary = await generate_summary(data.text)
         # emb_text = await generate_embedding(data.text)
         # emb_summary = await generate_embedding(summary)
@@ -53,9 +65,8 @@ async def process_text():
         # upsert_to_qdrant("resumos", summary, emb_summary, data.metadata)
 
         # return {"resumo": summary, "mensagem": "Processado com sucesso"}
-        print("Running...")
-        run()
-        return {"resumo": "summary", "mensagem": "Processado com sucesso"}
+        
+        return {"summary": summary, "mensagem": "Processado com sucesso"}
     except HTTPException:
         raise
     except Exception as e:
@@ -67,15 +78,25 @@ async def process_text():
 # Replace with inputs you want to test with, it will automatically
 # interpolate any tasks and agents information
 
-def run():
+def run(textToSummarize: str):
     """
     Run the crew.
     """
     inputs = {
-        'topic': 'Bananas'
+        'textToSummarize': textToSummarize
     }
-    PrivacyRareEventCrew().crew().kickoff(inputs=inputs)
-
+    try: 
+        crew_output = PrivacyRareEventCrew().crew().kickoff(inputs=inputs)
+        
+        result = TextDataResult()
+        result.summary = crew_output.raw
+        # result.summary = summarize_task.raw
+        # result.paragraph = summarize_paragraph_task.raw
+        # result.phrases = summarize_phrases_task.raw 
+        
+        return result
+    except Exception as e:
+        raise Exception(f"An error occurred while running the crew: {e}")
 
 def train():
     """
