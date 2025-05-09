@@ -105,6 +105,15 @@ services:
       - qdrant
       - daskscheduler
 
+  vectorvisualizer:
+    build: ./appVectorVisualizer
+    ports:
+      - "18003:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
 networks:
   exp-net:
 
