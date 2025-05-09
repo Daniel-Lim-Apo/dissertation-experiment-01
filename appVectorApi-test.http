@@ -14,10 +14,19 @@ Content-Type: application/json
 
 {
   "id": {
-    "number": "0012",
+    "number": "0016",
     "place": "123456789",
     "year": "2025"
   },
-  "text": "Climate change impacts are increasing worldwide."
+  "text": "Climates chfange fimpacts are increasing worldwide."
+}
+
+### Search for similar texts
+POST http://localhost:18002/search
+Content-Type: application/json
+
+{
+  "text": "What is climate change?",
+  "top_k": 3
 }
 

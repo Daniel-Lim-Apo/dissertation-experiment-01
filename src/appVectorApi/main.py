@@ -51,8 +51,9 @@ async def health_check():
 
 @app.post("/vectorize")
 def vectorize_text(data: VectorRequest):
-    future = client.submit(compute_embedding, data.text)
-    vector = future.result()
+    # future = client.submit(compute_embedding, data.text)
+    # vector = future.result()
+    vector = compute_embedding(data.text) 
 
     key_str = f"{data.id.number}_{data.id.place}_{data.id.year}"
     uid = hashlib.md5((key_str + data.text).encode()).hexdigest()
@@ -73,8 +74,10 @@ def vectorize_text(data: VectorRequest):
 
 @app.post("/search")
 def search_similar(data: SearchRequestModel):
-    future = client.submit(compute_embedding, data.text)
-    query_vector = future.result()
+    # future = client.submit(compute_embedding, data.text)
+    # query_vector = future.result()
+    
+    query_vector = compute_embedding(data.text)
 
     results = qdrant.search(
         collection_name=COLLECTION_NAME,

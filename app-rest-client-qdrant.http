@@ -24,3 +24,7 @@ Accept: application/json
 
 ### Get all points from `textos_originais`
 GET http://localhost:6333/collections/textos_originais
+
+### Get all points from `text_vectors`
+GET http://localhost:6333/collections/text_vectors
+
