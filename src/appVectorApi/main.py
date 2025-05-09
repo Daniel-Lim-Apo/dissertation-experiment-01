@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from qdrant_client import QdrantClient
 from qdrant_client.models import VectorParams, PointStruct, Distance
-from dask.distributed import Client
+# from dask.distributed import Client
 import hashlib
 from typing import List
 from embedding import compute_embedding
@@ -11,7 +11,7 @@ from embedding import compute_embedding
 app = FastAPI()
 
 # Dask client connection
-client = Client("tcp://daskscheduler:8786")
+# client = Client("tcp://daskscheduler:8786")
 
 # Qdrant setup
 qdrant = QdrantClient(host="qdrant", port=6333)
@@ -82,13 +82,15 @@ def search_similar(data: SearchRequestModel):
     results = qdrant.search(
         collection_name=COLLECTION_NAME,
         query_vector=query_vector,
-        top=data.top_k,
+        limit=data.top_k,
         with_payload=True
     )
 
     return [
         {
             "score": r.score,
-            "payload": r.payload
-        } for r in results
+            "payload": dict(r.payload) if isinstance(r.payload, dict) else str(r.payload)
+        }
+        for r in results
     ]
+
