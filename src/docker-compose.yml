@@ -43,8 +43,19 @@ services:
     restart: unless-stopped
 
   # Begin of Dask ***********
+  # daskscheduler:
+  #   image: daskdev/dask
+  #   command: dask-scheduler
+  #   ports:
+  #     - "8786:8786"
+  #     - "8787:8787"
+  #   networks:
+  #     - exp-net
+
   daskscheduler:
-    image: daskdev/dask
+    build:
+      context: .
+      dockerfile: ./daskworker/Dockerfile
     command: dask-scheduler
     ports:
       - "8786:8786"
@@ -53,7 +64,9 @@ services:
       - exp-net
 
   daskworker1:
-    image: daskdev/dask
+    build:
+      context: .
+      dockerfile: ./daskworker/Dockerfile
     command: dask worker tcp://daskscheduler:8786
     networks:
       - exp-net
@@ -61,7 +74,9 @@ services:
       - daskscheduler
 
   daskworker2:
-    image: daskdev/dask
+    build:
+      context: .
+      dockerfile: ./daskworker/Dockerfile
     command: dask worker tcp://daskscheduler:8786
     networks:
       - exp-net
