@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import sys
+import time
 import warnings
 
 import os
@@ -15,7 +16,9 @@ import httpx
 from typing import Optional
 
 from crew import PrivacyRareEventCrew
+from dask.distributed import Client
 
+import time
 
 # ------------------- Configuration -------------------
 
@@ -28,8 +31,33 @@ OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
 QDRANT_HOST = os.getenv("QDRANT_HOST", "qdrant")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 
+
+# --------------- Dask -------------------------
+# Connect to Dask scheduler
+clientDask = Client("tcp://daskscheduler:8786")
+# Define a custom runner for parallel execution using Dask
+def run_crew_parallel(tasks):
+    futures = [clientDask.submit(task.run) for task in tasks]
+    results = clientDask.gather(futures)
+    return results
+
+# def run_crew_test(tasks):
+#     futures = [clientDask.submit(task) for task in tasks]
+#     results = clientDask.gather(futures)
+#     return results
+
+#     futures = [client.submit(slow_increment, i) for i in range(10)]
+#     results = client.gather(futures)
+
+#     print(f"Results: {results}")
+
+
+
+
 qdrant_client = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
 app = FastAPI()
+
+
 
 # ------------------- Models -------------------
 class TextData(BaseModel):
@@ -52,11 +80,27 @@ async def root():
 async def health_check():
     return {"status": "healthy"}
 
+
+
+def test_slow_increment(x):
+    time.sleep(2)
+    return x + 1
+
+@app.get("/dasktest")
+async def dasktest():
+
+    futuresdasktest = [clientDask.submit(test_slow_increment, i) for i in range(10)]
+    resultsdasktest = clientDask.gather(futuresdasktest)
+
+    return {"Results": resultsdasktest}
+
 @app.post("/process_text/")
 async def process_text(data: TextData):
 # async def process_text():
     try:
-        summary = run(data.text)
+        # summary = run(data.text)
+        summary = run_crew_parallel(run(data.text))
+        
         # summary = await generate_summary(data.text)
         # emb_text = await generate_embedding(data.text)
         # emb_summary = await generate_embedding(summary)

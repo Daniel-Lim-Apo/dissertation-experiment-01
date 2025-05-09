@@ -4,3 +4,4 @@ crewai
 qdrant-client
 requests
 langchain-ollama
+dask[distributed]

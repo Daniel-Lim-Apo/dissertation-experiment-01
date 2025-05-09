@@ -8,6 +8,10 @@ Accept: application/json
 GET http://localhost:18000/health
 Accept: application/json
 
+### dasktest
+GET http://localhost:18000/dasktest
+Accept: application/json
+
 ###
 
 ### Process Text

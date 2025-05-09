@@ -1,0 +1,26 @@
+### Scroll points from `resumos`
+POST http://localhost:6333/collections/resumos/points/scroll
+Content-Type: application/json
+
+{
+  "limit": 100,
+  "with_payload": true,
+  "with_vector": true
+}
+
+### Scroll points from `textos_originais`
+POST http://localhost:6333/collections/textos_originais/points/scroll
+Content-Type: application/json
+
+{
+  "limit": 100,
+  "with_payload": true,
+  "with_vector": true
+}
+
+### Qdrant List Collections
+GET http://localhost:6333/collections
+Accept: application/json
+
+### Get all points from `textos_originais`
+GET http://localhost:6333/collections/textos_originais

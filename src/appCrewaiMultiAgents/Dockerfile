@@ -12,4 +12,6 @@ ENV OPENAI_API_KEY = none
 
 COPY . .
 
+ENV PYTHONPATH="${PYTHONPATH}:/appCrewaiMultiAgents"
+
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

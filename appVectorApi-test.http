@@ -1,0 +1,23 @@
+### Root Endpoint
+GET http://localhost:18002/
+Accept: application/json
+
+###
+
+### Health Check
+GET http://localhost:18002/health
+Accept: application/json
+
+### Vectorize a text
+POST http://localhost:18002/vectorize
+Content-Type: application/json
+
+{
+  "id": {
+    "number": "0012",
+    "place": "123456789",
+    "year": "2025"
+  },
+  "text": "Climate change impacts are increasing worldwide."
+}
+

@@ -2,8 +2,6 @@ import os
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from langchain_ollama import OllamaLLM
-# from langchain_community.llms import Ollama
-# from langchain_ollama import ChatOllama
 
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
