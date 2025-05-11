@@ -114,6 +114,20 @@ services:
     depends_on:
       - qdrant
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ Management UI
+    networks:
+      - exp-net
+    environment:
+      RABBITMQ_DEFAULT_USER: your_user
+      RABBITMQ_DEFAULT_PASS: your_strong_password
+    volumes:
+      - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+    restart: unless-stopped
+
 networks:
   exp-net:
 
