@@ -178,7 +178,7 @@ services:
     image: bitnami/spark:latest
     container_name: spark-history
     ports:
-      - "18080:18080"
+      - "18084:18080"
     command: >
       /opt/bitnami/spark/bin/spark-class
       org.apache.spark.deploy.history.HistoryServer
@@ -191,10 +191,10 @@ services:
 
   prometheus:
     image: prom/prometheus
+    volumes:
+      - ./prometheus:/etc/prometheus
     ports:
       - "19090:9090"
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     networks:
       - exp-net
 
@@ -229,7 +229,6 @@ services:
 
 networks:
   exp-net:
-    driver: bridge
 
 volumes:
   ollama-data:
