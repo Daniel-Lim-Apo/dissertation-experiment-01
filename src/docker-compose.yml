@@ -133,44 +133,39 @@ services:
     container_name: spark-master
     hostname: spark-master
     ports:
-      - "17077:7077"
-      - "18080:8080"
-    volumes:
-      - ./spark/conf:/opt/bitnami/spark/conf
-      - D:/DockerVolumes/privacy/RareEvents/spark_logs:/opt/spark-events
+      - "17077:7077" # Spark master port
+      - "18080:8080" # Spark master Web UI
     environment:
       - SPARK_MODE=master
       - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=/opt/spark-events
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/spark_logs:/opt/spark-events
     networks:
       - exp-net
 
   spark-worker-1:
     image: bitnami/spark:latest
     container_name: spark-worker-1
-    ports:
-      - "18081:8081"
     depends_on:
       - spark-master
+    ports:
+      - "18081:8081" # Worker 1 Web UI
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
-    volumes:
-      - ./spark/conf:/opt/bitnami/spark/conf
     networks:
       - exp-net
 
   spark-worker-2:
     image: bitnami/spark:latest
     container_name: spark-worker-2
-    ports:
-      - "18082:8081"
     depends_on:
       - spark-master
+    ports:
+      - "18082:8081" # Worker 2 Web UI
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
-    volumes:
-      - ./spark/conf:/opt/bitnami/spark/conf
     networks:
       - exp-net
 
@@ -178,7 +173,7 @@ services:
     image: bitnami/spark:latest
     container_name: spark-history
     ports:
-      - "18084:18080"
+      - "18084:18080" # Spark History Server Web UI
     command: >
       /opt/bitnami/spark/bin/spark-class
       org.apache.spark.deploy.history.HistoryServer
@@ -189,30 +184,49 @@ services:
     networks:
       - exp-net
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    ports:
-      - "19090:9090" # Accessible from host at http://localhost:19090
-    volumes:
-      - ./prometheus:/etc/prometheus
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
-    networks:
-      - exp-net
+  # spark-history:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-history
+  #   ports:
+  #     - "18084:18080"
+  #     - "18094:7074"
+  #   command: >
+  #     /opt/bitnami/spark/bin/spark-class
+  #     org.apache.spark.deploy.history.HistoryServer
+  #   environment:
+  #     - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark-events
+  #     - SPARK_DAEMON_JAVA_OPTS=-javaagent:/opt/bitnami/spark/jars/jmx_prometheus_javaagent-0.20.0.jar=7074:/opt/bitnami/spark/conf/jmx-config.yaml
+  #   volumes:
+  #     - ./spark/conf/jmx-config.yaml:/opt/bitnami/spark/conf/jmx-config.yaml
+  #     - ./spark/ext-jars:/opt/bitnami/spark/ext-jars
+  #   networks:
+  #     - exp-net
 
-  grafana:
-    image: grafana/grafana
-    ports:
-      - "13000:3000"
-    networks:
-      - exp-net
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   ports:
+  #     - "19090:9090" # Accessible from host at http://localhost:19090
+  #   volumes:
+  #     - ./prometheus:/etc/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #   networks:
+  #     - exp-net
+
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "13000:3000"
+  #   networks:
+  #     - exp-net
 
   csv_reader:
     build: ./csv_reader
     container_name: csv-reader
     depends_on:
       - spark-master
+    # restart: on-failure
     volumes:
       - ./data:/data
       - D:/DockerVolumes/privacy/RareEvents/ocorrencias_parquet:/shared/ocorrencias_parquet
