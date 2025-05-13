@@ -44,44 +44,58 @@ services:
 
   # Begin of Dask ***********
   daskscheduler:
-    image: daskdev/dask
-    command: dask-scheduler
+    build:
+      context: ./daskscheduler
+      dockerfile: Dockerfile
     ports:
-      - "8786:8786"
-      - "8787:8787"
+      - "18786:8786"
+      - "18787:8787"
     networks:
       - exp-net
-
-  # daskscheduler:
-  #   container_name: daskscheduler
-  #   build:
-  #     dockerfile: ./daskworker/Dockerfile
-  #   command: dask-scheduler
-  #   ports:
-  #     - "8786:8786"
-  #     - "8787:8787"
-  #   networks:
-  #     - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
 
   daskworker1:
     build:
-      context: .
-      dockerfile: ./daskworker/Dockerfile
+      context: ./daskworker
+      dockerfile: Dockerfile
     command: dask worker tcp://daskscheduler:8786
     networks:
       - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
     depends_on:
       - daskscheduler
 
   daskworker2:
     build:
-      context: .
-      dockerfile: ./daskworker/Dockerfile
+      context: ./daskworker
+      dockerfile: Dockerfile
     command: dask worker tcp://daskscheduler:8786
     networks:
       - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
     depends_on:
       - daskscheduler
+
+  daskcsvworker:
+    build:
+      context: ./daskcsvworker
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
 
   dasktest:
     build:
@@ -129,58 +143,58 @@ services:
       - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
 
-  spark-master:
-    image: bitnami/spark:latest
-    container_name: spark-master
-    hostname: spark-master
-    ports:
-      - "17077:7077" # Spark master port
-      - "18080:8080" # Spark master Web UI
-    environment:
-      - SPARK_MODE=master
-      - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=/opt/spark-events
-    volumes:
-      # - D:/DockerVolumes/privacy/RareEvents:/shared
-      - /home/strsico/docker/shared/RareEvents/:/shared
+  # spark-master:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-master
+  #   hostname: spark-master
+  #   ports:
+  #     - "17077:7077" # Spark master port
+  #     - "18080:8080" # Spark master Web UI
+  #   environment:
+  #     - SPARK_MODE=master
+  #     - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=/opt/spark-events
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
 
-    networks:
-      - exp-net
+  #   networks:
+  #     - exp-net
 
-  spark-worker-1:
-    image: bitnami/spark:latest
-    container_name: spark-worker-1
-    depends_on:
-      - spark-master
-    ports:
-      - "18081:8081" # Worker 1 Web UI
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-    volumes:
-      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
-      # - D:/DockerVolumes/privacy/RareEvents:/shared
-      - /home/strsico/docker/shared/RareEvents/:/shared
+  # spark-worker-1:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-worker-1
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "18081:8081" # Worker 1 Web UI
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
 
-    networks:
-      - exp-net
+  #   networks:
+  #     - exp-net
 
-  spark-worker-2:
-    image: bitnami/spark:latest
-    container_name: spark-worker-2
-    depends_on:
-      - spark-master
-    ports:
-      - "18082:8081" # Worker 2 Web UI
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-    volumes:
-      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
-      # - D:/DockerVolumes/privacy/RareEvents:/shared
-      - /home/strsico/docker/shared/RareEvents/:/shared
+  # spark-worker-2:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-worker-2
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "18082:8081" # Worker 2 Web UI
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
 
-    networks:
-      - exp-net
+  #   networks:
+  #     - exp-net
 
   # spark-history:
   #   image: bitnami/spark:latest
@@ -235,35 +249,50 @@ services:
   #   networks:
   #     - exp-net
 
-  csv_reader:
-    build: ./csv_reader
-    container_name: csv_reader
-    depends_on:
-      - spark-master
-    environment:
-      - PYSPARK_PYTHON=python3
-    volumes:
-      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/shared/data/ocorrencias.csv
-      # - D:/DockerVolumes/privacy/RareEvents:/shared
-      # - /mnt/d/DockerVolumes/privacy/RareEvents:/shared
-      - /home/strsico/docker/shared/RareEvents/:/shared
+  # csv_reader:
+  #   build: ./csv_reader
+  #   container_name: csv_reader
+  #   depends_on:
+  #     - spark-master
+  #   environment:
+  #     - PYSPARK_PYTHON=python3
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/shared/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     # - /mnt/d/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
 
-      # - D:/DockerVolumes/privacy/RareEvents/output/ocorrencias_parquet:/shared/output/ocorrencias_parquet
-    command: tail -f /dev/null # Mantém o container "ligado"s
-    networks:
-      - exp-net
+  #     # - D:/DockerVolumes/privacy/RareEvents/output/ocorrencias_parquet:/shared/output/ocorrencias_parquet
+  #   command: tail -f /dev/null # Mantém o container "ligado"s
+  #   networks:
+  #     - exp-net
 
-  parquet_reader:
-    build: ./parquet_reader
-    container_name: parquet-reader
-    depends_on:
-      - csv_reader
-    volumes:
-      # - D:/DockerVolumes/privacy/RareEvents:/shared
-      - /home/strsico/docker/shared/RareEvents/:/shared
+  # parquet_reader:
+  #   build: ./parquet_reader
+  #   container_name: parquet-reader
+  #   depends_on:
+  #     - csv_reader
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
 
-    networks:
-      - exp-net
+  #   networks:
+  #     - exp-net
+
+  # daskcsvworker:
+  #   build:
+  #     context: ./daskcsvworker
+  #     dockerfile: Dockerfile
+  #   command: python reader.py
+  #   volumes:
+  #     - D:/DockerVolumes/privacy/RareEvents/data:/data
+  #     - D:/DockerVolumes/privacy/RareEvents/output:/output
+  #   networks:
+  #     - exp-net
+  #   depends_on:
+  #     - daskscheduler
+  #     - daskworker1
+  #     - daskworker2
 
 networks:
   exp-net:
