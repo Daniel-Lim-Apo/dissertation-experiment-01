@@ -22,8 +22,8 @@ services:
 
   ollama:
     build:
-      context: .
-      dockerfile: Dockerfile.ollama
+      context: ./ollama
+      dockerfile: Dockerfile
     ports:
       - "11434:11434"
     networks:
@@ -142,6 +142,15 @@ services:
       # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
       - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
+
+  text-processor:
+    build:
+      context: ./text_processor
+    depends_on:
+      - rabbitmq
+      - apicrewai
+    networks:
+      - exp-net
 
   # spark-master:
   #   image: bitnami/spark:latest

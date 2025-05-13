@@ -2,15 +2,12 @@
 
 FROM ollama/ollama
 
-# Copia o certificado Fortigate para a store de CAs confiáveis
+# Add Fortigate corporate CA certificate (if required for network interception)
 COPY ./fortigate.crt /usr/local/share/ca-certificates/fortigate-ca.crt
-
-# Atualiza os certificados do sistema
 RUN update-ca-certificates
 
-# Copia o script de inicialização
+# Copy the startup script (which now only starts the server)
 # COPY ./start.ollama.sh /start.ollama.sh
 # RUN chmod +x /start.ollama.sh
 
-# Substitui o entrypoint original por nosso script
 # ENTRYPOINT ["/start.ollama.sh"]
