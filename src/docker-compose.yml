@@ -125,7 +125,8 @@ services:
       RABBITMQ_DEFAULT_USER: your_user
       RABBITMQ_DEFAULT_PASS: your_strong_password
     volumes:
-      - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+      # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
 
   spark-master:
@@ -139,7 +140,9 @@ services:
       - SPARK_MODE=master
       - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=/opt/spark-events
     volumes:
-      - D:/DockerVolumes/privacy/RareEvents/spark_logs:/opt/spark-events
+      # - D:/DockerVolumes/privacy/RareEvents:/shared
+      - /home/strsico/docker/shared/RareEvents/:/shared
+
     networks:
       - exp-net
 
@@ -153,6 +156,11 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
+    volumes:
+      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+      # - D:/DockerVolumes/privacy/RareEvents:/shared
+      - /home/strsico/docker/shared/RareEvents/:/shared
+
     networks:
       - exp-net
 
@@ -166,23 +174,29 @@ services:
     environment:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
+    volumes:
+      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+      # - D:/DockerVolumes/privacy/RareEvents:/shared
+      - /home/strsico/docker/shared/RareEvents/:/shared
+
     networks:
       - exp-net
 
-  spark-history:
-    image: bitnami/spark:latest
-    container_name: spark-history
-    ports:
-      - "18084:18080" # Spark History Server Web UI
-    command: >
-      /opt/bitnami/spark/bin/spark-class
-      org.apache.spark.deploy.history.HistoryServer
-    environment:
-      - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark-events
-    volumes:
-      - D:/DockerVolumes/privacy/RareEvents/spark_logs:/opt/spark-events
-    networks:
-      - exp-net
+  # spark-history:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-history
+  #   ports:
+  #     - "18084:18080" # Spark History Server Web UI
+  #   command: >
+  #     /opt/bitnami/spark/bin/spark-class
+  #     org.apache.spark.deploy.history.HistoryServer
+  #   environment:
+  #     - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark-events
+  #   volumes:
+  #     - /home/strsico/docker/shared/RareEvents/spark_logs:/opt/spark-events
+
+  #   networks:
+  #     - exp-net
 
   # spark-history:
   #   image: bitnami/spark:latest
@@ -223,14 +237,19 @@ services:
 
   csv_reader:
     build: ./csv_reader
-    container_name: csv-reader
+    container_name: csv_reader
     depends_on:
       - spark-master
-    # restart: on-failure
+    environment:
+      - PYSPARK_PYTHON=python3
     volumes:
-      - ./data:/data
-      - D:/DockerVolumes/privacy/RareEvents/ocorrencias_parquet:/shared/ocorrencias_parquet
-      - D:/DockerVolumes/privacy/RareEvents/spark_logs:/opt/spark-events
+      # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/shared/data/ocorrencias.csv
+      # - D:/DockerVolumes/privacy/RareEvents:/shared
+      # - /mnt/d/DockerVolumes/privacy/RareEvents:/shared
+      - /home/strsico/docker/shared/RareEvents/:/shared
+
+      # - D:/DockerVolumes/privacy/RareEvents/output/ocorrencias_parquet:/shared/output/ocorrencias_parquet
+    command: tail -f /dev/null # Mantém o container "ligado"s
     networks:
       - exp-net
 
@@ -240,7 +259,9 @@ services:
     depends_on:
       - csv_reader
     volumes:
-      - D:/DockerVolumes/privacy/RareEvents/ocorrencias_parquet:/shared/ocorrencias_parquet
+      # - D:/DockerVolumes/privacy/RareEvents:/shared
+      - /home/strsico/docker/shared/RareEvents/:/shared
+
     networks:
       - exp-net
 
