@@ -7,8 +7,10 @@ spark = SparkSession.builder \
 
 print(f"✅ Spark version: {spark.version}")
 
-csv_path = "/data/ocorrencias.csv"
-output_path = "/shared/ocorrencias_parquet"
+csv_path = "/shared/data/ocorrencias.csv"
+# output_path = "/tmp/parquet"  # Use path que funciona no container!
+# output_path = "/shared/output/ocorrencias_parquet"
+output_path = "/shared/output/ocorrencias_parquet"
 
 print(f"📥 Reading CSV: {csv_path}")
 df = spark.read.csv(
@@ -19,7 +21,7 @@ df = spark.read.csv(
     encoding="utf-8"
 )
 
-print("📤 Writing Parquet to shared directory...")
+print(f"📤 Writing Parquet to: {output_path}")
 df.write.mode("overwrite").parquet(output_path)
 
 print("✅ CSV successfully written to Parquet.")
