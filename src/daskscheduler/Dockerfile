@@ -1,15 +1,16 @@
 FROM python:3.10-slim
 
-# WORKDIR /appVectorApi
+# Set working directory
 WORKDIR /daskscheduler
 
-# COPY ./appVectorApi/requirements.txt .
-# RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements from local build context
+COPY requirements.txt .
 
+# Install all dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# COPY ./appVectorApi .
+# Optional: add diagnostics
+RUN pip list
 
-# COPY ./
-
-CMD ["dask", "scheduler"]
+# Run Dask scheduler
+CMD ["dask-scheduler"]

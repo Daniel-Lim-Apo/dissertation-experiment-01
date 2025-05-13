@@ -1,10 +1,10 @@
 FROM python:3.10-slim
 
-WORKDIR /daskworker
+WORKDIR /app
 
 COPY requirements.txt .
-
 RUN pip install --no-cache-dir -r requirements.txt
 
-CMD ["dask", "worker", "tcp://daskscheduler:8786"]
+COPY reader.py .
 
+CMD ["python", "reader.py"]

@@ -1,1 +1,9 @@
 dask[complete]
+distributed
+pandas
+pyarrow
+lz4
+numpy
+toolz
+dask-expr
+bokeh
