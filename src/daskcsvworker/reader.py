@@ -61,22 +61,25 @@ def main():
     df.to_parquet(output_dir, engine="pyarrow", write_index=False)
     print(f"Data written to {output_dir} in Parquet format.")
 
-    # Materialize the entire parquet file once
+    # Read and materialize to a Pandas DataFrame
     print("Reading Parquet once into a full Pandas DataFrame to avoid recomputation...")
     full_df = dd.read_parquet(output_dir).compute()
-    print(f"Total rows to send: {len(full_df)}")
+    print(f"Total rows before deduplication: {len(full_df)}")
 
+    # Remove only sequential duplicates
+    full_df_dedup = full_df[~(full_df == full_df.shift(1)).all(axis=1)]
+    print(f"Total rows after removing sequential duplicates: {len(full_df_dedup)}")
+
+    # Setup RabbitMQ and send messages
     connection, channel = setup_rabbitmq_connection()
     print(f"Connected to RabbitMQ. Sending messages to queue '{RABBITMQ_QUEUE}'...")
 
-    for row in full_df.itertuples(index=False):
-        # Convert row to dict, then to JSON
+    for row in full_df_dedup.itertuples(index=False):
         row_dict = row._asdict()
         message = json.dumps(row_dict, ensure_ascii=False)
         send_message(channel, message)
 
     print("All messages sent successfully.")
-
     connection.close()
     print("RabbitMQ connection closed.")
 
