@@ -9,8 +9,8 @@ services:
       - ollama
       - qdrant
 
-  apicrewai:
-    build: ./appCrewaiMultiAgents
+  appcrewaimultiagents:
+    build: ./appcrewaimultiagents
     ports:
       - "18000:8000"
     networks:
@@ -18,7 +18,6 @@ services:
     depends_on:
       - ollama
       - qdrant
-      - daskscheduler
 
   ollama:
     build:
@@ -148,9 +147,22 @@ services:
       context: ./text_processor
     depends_on:
       - rabbitmq
-      - apicrewai
+      - appcrewaimultiagents
+      - ollama
+      - qdrant
     networks:
       - exp-net
+
+  text-vectorizer:
+    build: ./text_vectorizer
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
 
   # spark-master:
   #   image: bitnami/spark:latest

@@ -3,6 +3,8 @@ FROM python:3.10-slim
 # Set working directory
 WORKDIR /daskscheduler
 
+ENV TZ=America/Sao_Paulo
+
 # Copy requirements from local build context
 COPY requirements.txt .
 

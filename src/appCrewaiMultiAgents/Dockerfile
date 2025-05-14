@@ -2,6 +2,8 @@ FROM python:3.10-slim
 
 WORKDIR /appCrewaiMultiAgents
 
+ENV TZ=America/Sao_Paulo
+
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -9,6 +11,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 ENV CREWAI_DISABLE_TELEMETRY=true
 ENV OTEL_SDK_DISABLED=true
 ENV OPENAI_API_KEY = none
+
 
 COPY . .
 

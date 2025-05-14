@@ -34,12 +34,12 @@ QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 
 # --------------- Dask -------------------------
 # Connect to Dask scheduler
-clientDask = Client("tcp://daskscheduler:8786")
+# clientDask = Client("tcp://daskscheduler:8786")
 # Define a custom runner for parallel execution using Dask
-def run_crew_parallel(tasks):
-    futures = [clientDask.submit(task.run) for task in tasks]
-    results = clientDask.gather(futures)
-    return results
+# def run_crew_parallel(tasks):
+#     futures = [clientDask.submit(task.run) for task in tasks]
+#     results = clientDask.gather(futures)
+#     return results
 
 # def run_crew_test(tasks):
 #     futures = [clientDask.submit(task) for task in tasks]
@@ -98,8 +98,8 @@ async def dasktest():
 async def process_text(data: TextData):
 # async def process_text():
     try:
-        # summary = run(data.text)
-        summary = run_crew_parallel(run(data.text))
+        summary = run(data.text)
+        # summary = run_crew_parallel(run(data.text))
         
         # summary = await generate_summary(data.text)
         # emb_text = await generate_embedding(data.text)
