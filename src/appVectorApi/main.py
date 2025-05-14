@@ -15,7 +15,7 @@ app = FastAPI()
 
 # Qdrant setup
 qdrant = QdrantClient(host="qdrant", port=6333)
-COLLECTION_NAME = "text_vectors"
+COLLECTION_NAME = "ocorrencias_resumo_collection"
 VECTOR_SIZE = 384  # for all-MiniLM-L6-v2
 
 try:

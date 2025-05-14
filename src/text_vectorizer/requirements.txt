@@ -6,7 +6,7 @@
 # huggingface-hub==0.14.1
 
 pika
-dask[distributed]
+dask[distributed] == 2025.4.1
 qdrant-client
 sentence-transformers
 transformers

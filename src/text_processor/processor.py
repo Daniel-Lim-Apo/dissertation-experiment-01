@@ -100,6 +100,7 @@ def process_message(body, channel, script_start_time, processing_batch):
 def main():
     script_start_time = time.time()
     script_start_dt = datetime.now()
+    print(datetime.now())
     processing_batch = generate_batch_id(script_start_dt)
 
     print(f"Starting processing batch: {processing_batch}")

@@ -3,8 +3,9 @@ import time
 import pika
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct, VectorParams, Distance, CollectionStatus
-from dask_utils import vectorize_text
 from dask import delayed, compute
+from sentence_transformers import SentenceTransformer
+import uuid
 
 MAX_IDLE_ATTEMPTS = 6
 WAIT_SECONDS = 10
@@ -19,6 +20,11 @@ QDRANT_PORT = 6333
 QDRANT_COLLECTION = "ocorrencias_resumo_collection"
 
 qdrant = QdrantClient(host=QDRANT_HOST, port=QDRANT_PORT)
+
+model = SentenceTransformer("all-MiniLM-L6-v2")
+
+def vectorize_text(text):
+    return model.encode(text, normalize_embeddings=True).tolist()
 
 # Ensure collection exists
 def ensure_collection():
@@ -40,28 +46,29 @@ def process_message(msg):
 
         # Dask vectorization
         future = delayed(vectorize_text)(resumo_text)
-        [vector] = compute(future)
-
-        # Construct compound ID (could also use a hash)
-        compound_id = f"{ano}_{unidade}_{numero}_{aditamento}"
-
-        payload = PointStruct(
-            id=compound_id,
-            vector=vector,
-            payload={
-                "ano": ano,
-                "unidade": unidade,
-                "numero": numero,
-                "aditamento": aditamento,
-                "resumo": resumo_text,
-            },
-        )
-
-        qdrant.upsert(collection_name=QDRANT_COLLECTION, points=[payload])
-        print(f"[✓] Saved point {compound_id} to Qdrant")
+        [vectorToSave] = compute(future)
+        saveToQdrant(ano, unidade, numero, aditamento, vectorToSave)
 
     except Exception as e:
         print(f"[!] Error processing message: {e}")
+
+def saveToQdrant(ano, unidade, numero, aditamento, resumo_text, vectorToSave):
+    compound_key = f"{ano}_{unidade}_{numero}_{aditamento}"
+    compound_id = str(uuid.uuid5(uuid.NAMESPACE_DNS, compound_key))
+
+    payload = PointStruct(
+        id=compound_id,
+        vector=vectorToSave,
+        payload={
+            "ano": ano,
+            "unidade": unidade,
+            "numero": numero,
+            "aditamento": aditamento,
+            "resumo": resumo_text,
+        },
+    )
+    qdrant.upsert(collection_name=QDRANT_COLLECTION, points=[payload])
+    print(f"[✓] Saved point {compound_key} to Qdrant with UUID: {compound_id}")
 
 def consume():
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)
@@ -93,4 +100,16 @@ def consume():
 
 if __name__ == "__main__":
     ensure_collection()
-    consume()
+    # consume()
+    
+    # Dask vectorization
+    text_test = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
+    print('Texto:',text_test)
+    future = delayed(vectorize_text)(text_test)
+    [vectorToSave] = compute(future)
+    print('Vector:',[vectorToSave])
+    # saveToQdrant(ano, unidade, numero, aditamento, vectorToSave)
+    saveToQdrant('0000', '0001', '001', '01', text_test, vectorToSave)
+    print('Saved to QDrant')
+    
+

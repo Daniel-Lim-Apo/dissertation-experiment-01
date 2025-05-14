@@ -8,8 +8,8 @@ Content-Type: application/json
   "with_vector": true
 }
 
-### Scroll points from `textos_originais`
-POST http://localhost:6333/collections/textos_originais/points/scroll
+### Scroll points from `ocorrencias_resumo_collection`
+POST http://localhost:6333/collections/ocorrencias_resumo_collection/points/scroll
 Content-Type: application/json
 
 {
@@ -26,5 +26,5 @@ Accept: application/json
 GET http://localhost:6333/collections/textos_originais
 
 ### Get all points from `text_vectors`
-GET http://localhost:6333/collections/text_vectors
+GET http://localhost:6333/collections/ocorrencias_resumo_collection
 
