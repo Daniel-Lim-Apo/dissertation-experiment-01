@@ -47,7 +47,7 @@ def process_message(msg):
         # Dask vectorization
         future = delayed(vectorize_text)(resumo_text)
         [vectorToSave] = compute(future)
-        saveToQdrant(ano, unidade, numero, aditamento, vectorToSave)
+        saveToQdrant(ano, unidade, numero, aditamento, resumo_text, vectorToSave)
 
     except Exception as e:
         print(f"[!] Error processing message: {e}")
@@ -100,16 +100,16 @@ def consume():
 
 if __name__ == "__main__":
     ensure_collection()
-    # consume()
+    consume()
     
-    # Dask vectorization
-    text_test = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
-    print('Texto:',text_test)
-    future = delayed(vectorize_text)(text_test)
-    [vectorToSave] = compute(future)
-    print('Vector:',[vectorToSave])
-    # saveToQdrant(ano, unidade, numero, aditamento, vectorToSave)
-    saveToQdrant('0000', '0001', '001', '01', text_test, vectorToSave)
-    print('Saved to QDrant')
+    # Dask vectorization for test and debug only
+    # text_test = 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum'
+    # print('Texto:',text_test)
+    # future = delayed(vectorize_text)(text_test)
+    # [vectorToSave] = compute(future)
+    # print('Vector:',[vectorToSave])
+    # # saveToQdrant(ano, unidade, numero, aditamento, vectorToSave)
+    # saveToQdrant('0000', '0001', '001', '01', text_test, vectorToSave)
+    # print('Saved to QDrant')
     
 
