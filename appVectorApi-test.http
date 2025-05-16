@@ -26,7 +26,7 @@ POST http://localhost:18002/search
 Content-Type: application/json
 
 {
-  "text": "Alguém falou palavras com grosseria e utilizando palavras de baixo calão",
-  "top_k": 3
+  "text": "O contexto é sobre a importância de usar ferramentas disponíveis para produzir um bom resumo; O texto destaca a necessidade de reduzir o conteúdo a apenas 3 frases importantes; É fundamental apresentar as informações mais relevantes do texto em uma linguagem simples e clara.",
+  "top_k": 10
 }
 
