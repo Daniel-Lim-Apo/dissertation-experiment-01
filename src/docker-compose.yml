@@ -164,6 +164,15 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
+  app-qdrant-visualizer:
+    build: ./app-Qdrant-Visualizer
+    ports:
+      - "18004:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
   # spark-master:
   #   image: bitnami/spark:latest
   #   container_name: spark-master

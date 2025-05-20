@@ -1,0 +1,10 @@
+qdrant-client
+numpy
+scipy
+umap-learn
+scikit-learn
+dash
+fastapi
+uvicorn
+plotly
+pandas
