@@ -8,7 +8,7 @@ import json
 dask.config.set({'dataframe.query-planning': True})
 
 RABBITMQ_HOST = 'rabbitmq'
-RABBITMQ_QUEUE = 'original_text_messages_flow_2'
+RABBITMQ_QUEUE = 'ocorrencias_historico_collection_flow_2'
 RABBITMQ_USER = 'your_user'
 RABBITMQ_PASS = 'your_strong_password'
 

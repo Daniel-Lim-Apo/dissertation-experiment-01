@@ -173,6 +173,53 @@ services:
     depends_on:
       - qdrant
 
+  app-qdrant-analyzer:
+    build: ./app-Qqdrant-Analyzer
+    ports:
+      - "18005:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  ###### Flow-2 - Begin ###################
+
+  dask-csv-flow-2:
+    build:
+      context: ./dask-csv-flow-2
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+  text-vectorizer-flow-2:
+    build: ./text-vectorizer-flow-2
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  app-qdrant-analyzer-flow-2:
+    build: ./app-Qdrant-Analyzer-Flow-2
+    ports:
+      - "19005:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+  ###### Flow-2 - End ###################
+
+
   # spark-master:
   #   image: bitnami/spark:latest
   #   container_name: spark-master

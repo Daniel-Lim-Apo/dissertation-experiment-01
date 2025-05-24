@@ -8,3 +8,6 @@ fastapi
 uvicorn
 plotly
 pandas
+matplotlib
+seaborn
+pyvis

@@ -1,0 +1,27 @@
+POST http://localhost:6333/collections/ocorrencias_historico_vectorized/points/query
+Content-Type: application/json
+
+{"query":"101472a2-2031-5e9e-b1c9-314801937e5c","limit":10,"with_vector":false,"with_payload":true}
+
+
+### Root Endpoint
+GET http://localhost:18002/
+Accept: application/json
+
+###
+
+### Health Check
+GET http://localhost:18002/health
+Accept: application/json
+
+### Vectorize a text
+
+### Search for similar texts
+POST http://localhost:18002/search
+Content-Type: application/json
+
+{
+  "text": "O contexto é sobre a importância de usar ferramentas disponíveis para produzir um bom resumo; O texto destaca a necessidade de reduzir o conteúdo a apenas 3 frases importantes; É fundamental apresentar as informações mais relevantes do texto em uma linguagem simples e clara.",
+  "top_k": 10
+}
+

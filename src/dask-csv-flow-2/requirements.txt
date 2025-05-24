@@ -1,5 +1,5 @@
-dask[complete]==2025.5.1
-distributed==2025.5.1
+dask[complete]
+distributed
 pandas
 pyarrow
 lz4

@@ -1,10 +1,7 @@
 dask[complete]==2025.5.1
 distributed==2025.5.1
-pandas
-pyarrow
-lz4
-numpy
-toolz
-dask-expr
-bokeh
+fastapi
+uvicorn
 qdrant-client
+pandas
+numpy
