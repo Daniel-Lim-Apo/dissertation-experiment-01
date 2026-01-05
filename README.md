@@ -14,6 +14,30 @@ This project implements the experimental case study for the dissertation: **"Pri
 
 It explores state-of-the-art techniques for privacy preservation in text processing, utilizing Semantic Similarity, Vector Databases (Qdrant), and AI Agents (LLMs) to detect rare events and mitigate re-identification risks.
 
+## Methodology
+
+![AI-Driven Data Processing Methodology](img/Case-Study-Methodology.png)
+
+The experimental case study follows a 6-step AI-driven data processing pipeline:
+
+1. **Data Ingestion**
+   - [csv_reader](src/csv_reader) / [parquet_reader](src/parquet_reader): Services responsible for gathering data from various sources (CSV, Parquet) to feed the pipeline.
+
+2. **Parallelization for Reading**
+   - [dask-csv-flow-2](src/dask-csv-flow-2): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
+
+3. **AI Agents for Summarization**
+   - [appCrewaiMultiAgents](src/appCrewaiMultiAgents): Deploys a crew of AI agents (using CrewAI) to synthesize and summarize textual data.
+
+4. **AI Agents in Docker Containers**
+   - [docker-compose.yml](src/docker-compose.yml): The entire multi-agent system and microservices are containerized and orchestrated for scalability and ease of deployment.
+
+5. **Vectorization with Parallel Computing**
+   - [text_vectorizer](src/text_vectorizer): Converts processed text into high-dimensional vectors using parallel computing techniques for efficient storage in Qdrant.
+
+6. **Rare Events Detection**
+   - [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2): Identifies rare events or outliers within the vectorized data stored in Qdrant.
+
 ## Architecture
 
 The system is built as a microservices architecture orchestrated by Docker Compose.
