@@ -138,7 +138,14 @@ To reproduce the experimental results presented in the dissertation:
     docker system prune -f
     ```
 
-2.  **Dataset Preparation**: Place the input CSV files in the `data/input` directory (mapped to `/data` in the container).
+This command does a forced cleanup of unused Docker resources on your system.
+
+2.  **Dataset Preparation**: 
+    
+    > [!WARNING]
+    > The original dataset used in this experiment contains **sensitive information** and is not publicly available. For reproducibility purposes, synthetic data can be generated following the specifications in [DATA_FORMAT.md](DATA_FORMAT.md).
+    
+    Place the input CSV files in the `data/input` directory (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
     - Start the `Standard Flow` using `docker-compose up --build -d`.
