@@ -125,10 +125,31 @@ The system supports different experimental flows defined in the architecture:
 *   **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
 *   **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
 
-To check the status of services:
 ```bash
 docker-compose ps
 ```
+
+### Reproducibility
+
+To reproduce the experimental results presented in the dissertation:
+
+1.  **Environment Setup**: Ensure your Docker environment is clean.
+    ```bash
+    docker system prune -f
+    ```
+
+2.  **Dataset Preparation**: Place the input CSV files in the `data/input` directory (mapped to `/data` in the container).
+
+3.  **Execution**:
+    - Start the `Standard Flow` using `docker-compose up --build -d`.
+    - Monitor the logs for `text_processor` to verify message processing:
+      ```bash
+      docker-compose logs -f text_processor
+      ```
+
+4.  **Verification**:
+    - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
+    - Use the visualizer at `http://localhost:8501` (Streamlit) to inspect the semantic clusters and detected rare events.
 
 ## Citation
 
