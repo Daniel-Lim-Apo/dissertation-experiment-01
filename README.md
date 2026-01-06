@@ -158,6 +158,43 @@ This command does a forced cleanup of unused Docker resources on your system.
     - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
     - Use the visualizer at `http://localhost:8501` (Streamlit) to inspect the semantic clusters and detected rare events.
 
+## Service Directory
+
+Detailed documentation for each service in the `src` folder:
+
+### Core Services
+- [app](src/app/README.md) - FastAPI service for text processing with Ollama and Qdrant
+- [appCrewaiMultiAgents](src/appCrewaiMultiAgents/README.md) - Multi-agent AI system using CrewAI
+- [appVectorApi](src/appVectorApi/README.md) - Vector API for Qdrant operations
+- [text_processor](src/text_processor/README.md) - RabbitMQ consumer for AI-based text processing
+
+### Data Ingestion
+- [csv_reader](src/csv_reader/README.md) - Spark-based CSV to Parquet converter
+- [parquet_reader](src/parquet_reader/README.md) - Parquet file reader
+- [dask-csv-flow-2](src/dask-csv-flow-2/README.md) - Dask-based parallel CSV reader
+
+### Vectorization
+- [text_vectorizer](src/text_vectorizer/README.md) - Text to vector embedding service
+- [text-vectorizer-flow-2](src/text-vectorizer-flow-2/README.md) - Alternative vectorization flow
+
+### Analysis & Visualization
+- [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2/README.md) - Rare event detection
+- [app-Qqdrant-Analyzer](src/app-Qqdrant-Analyzer/README.md) - Vector data analysis
+- [app-Qdrant-Visualizer](src/app-Qdrant-Visualizer/README.md) - Qdrant visualization tool
+- [appVectorVisualizer](src/appVectorVisualizer/README.md) - Streamlit vector visualizer
+
+### Distributed Computing
+- [daskscheduler](src/daskscheduler/README.md) - Dask cluster scheduler
+- [daskworker](src/daskworker/README.md) - General Dask worker
+- [daskcsvworker](src/daskcsvworker/README.md) - Specialized CSV worker
+- [dasktest](src/dasktest/README.md) - Dask cluster connectivity test
+- [spark](src/spark/README.md) - Apache Spark cluster
+
+### Infrastructure
+- [ollama](src/ollama/README.md) - Local LLM hosting service
+- [grafana](src/grafana/README.md) - Metrics visualization
+- [prometheus](src/prometheus/README.md) - Metrics collection
+
 ## Citation
 
 If you use this code or dissertation findings in your research, please cite.
