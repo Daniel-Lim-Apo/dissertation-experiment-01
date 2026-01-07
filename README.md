@@ -16,7 +16,7 @@ It explores state-of-the-art techniques for privacy preservation in text process
 
 ## Methodology
 
-![AI-Driven Data Processing Methodology](img/Case-Study-Methodology.png)
+![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-1.png)
 
 The experimental case study follows a 6-step AI-driven data processing pipeline:
 
@@ -189,9 +189,10 @@ Detailed documentation for each service in the `src` folder:
 - [daskcsvworker](src/daskcsvworker/README.md) - Specialized CSV worker
 - [dasktest](src/dasktest/README.md) - Dask cluster connectivity test
 - [spark](src/spark/README.md) - Apache Spark cluster
+- [dask](src/dask/README.md) - Flexible library for parallel computing in Python that scales from single machines to large clusters
 
 ### Infrastructure
-- [ollama](src/ollama/README.md) - Local LLM hosting service
+- [ollama](src/ollama/README.md) - **Ollama** is a local runtime for running Large Language Models (LLMs) on your own infrastructure. It provides a simple API for text generation and embeddings, allowing you to use models like Llama3 without relying on external cloud services
 - [grafana](src/grafana/README.md) - **Grafana** is an open-source analytics and monitoring platform that provides interactive display of dashboards and metrics. It connects to Prometheus to display real-time metrics, system performance, and resource usage through customizable charts and graphs
 - [prometheus](src/prometheus/README.md) - **Prometheus** is an open-source monitoring and alerting toolkit that collects and stores metrics as time-series data. It scrapes metrics from configured services at specified intervals and provides a query language (PromQL) for data analysis
 
