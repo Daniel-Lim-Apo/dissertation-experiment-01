@@ -192,8 +192,8 @@ Detailed documentation for each service in the `src` folder:
 
 ### Infrastructure
 - [ollama](src/ollama/README.md) - Local LLM hosting service
-- [grafana](src/grafana/README.md) - Metrics visualization
-- [prometheus](src/prometheus/README.md) - Metrics collection
+- [grafana](src/grafana/README.md) - **Grafana** is an open-source analytics and monitoring platform that provides interactive display of dashboards and metrics. It connects to Prometheus to display real-time metrics, system performance, and resource usage through customizable charts and graphs
+- [prometheus](src/prometheus/README.md) - **Prometheus** is an open-source monitoring and alerting toolkit that collects and stores metrics as time-series data. It scrapes metrics from configured services at specified intervals and provides a query language (PromQL) for data analysis
 
 ## Citation
 
