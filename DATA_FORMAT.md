@@ -2,12 +2,38 @@
 
 ## Overview
 
-This document describes the expected JSON format for input data used in the experimental pipeline. 
+This document describes the data formats used throughout the experimental pipeline, from the original CSV source to the JSON messages processed by the system.
 
 > [!IMPORTANT]
 > **Data Confidentiality**: The original dataset used in this dissertation contains sensitive information and is not publicly available due to privacy and confidentiality requirements. The data structure is documented here to enable synthetic data generation for reproducibility purposes.
 
-## Input Data Format
+## Original Data Source: CSV Format
+
+The original data file is in **CSV (Comma-Separated Values) format**. 
+
+> [!IMPORTANT]
+> **Data Preparation**: You must prepare your data in the exact same format as [ocorrencias_example.csv](data/ocorrencias_example.csv). The file uses a **semicolon (`;`)** as the delimiter.
+
+### CSV Data Dictionary
+
+The following table describes the fields required in the CSV file:
+
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `ano` | Integer | The year the police occurrence was recorded (e.g., 2020, 2021). |
+| `unidade` | Integer | System code for the police unit or station where the occurrence was registered. |
+| `numero` | Integer | The unique identification number of the police occurrence within that unit and year. |
+| `aditamento` | Integer | Zero for the main occurrence; higher values (1, 2, 3...) indicate subsequent amendments or addendums. |
+| `historico` | Text | The full narrative text of the police occurrence in Brazilian Portuguese, including facts, fictional person data, and police actions. |
+
+This CSV file serves as the primary data source and is used to feed the processing workflows in the following scenarios:
+
+- **Flow 1**: The CSV file is processed by `\daskcsvworker` in conjunction with `daskscheduler` for distributed data processing
+- **Flow 2**: The CSV file is processed using `dask-csv-flow-2`, which handles the CSV ingestion and transformation pipeline
+
+The CSV file contains the same fields that are later converted to JSON format for processing by the AI agents. During the ingestion phase, each row from the CSV file is transformed into a JSON message that follows the structure described below.
+
+## JSON Input Data Format
 
 The system expects JSON messages with the following structure:
 

@@ -7,7 +7,7 @@ spark = SparkSession.builder \
 
 print(f"Spark version: {spark.version}")
 
-csv_path = "/shared/data/ocorrencias.csv"
+csv_path = "/shared/data/ANO_OCORRENCIA"
 # output_path = "/tmp/parquet"  # Use the path that works in the container!
 # output_path = "/shared/output/ocorrencias_parquet"
 output_path = "/shared/output/ocorrencias_parquet"
