@@ -99,7 +99,7 @@ graph TD
 ### Prerequisites
 
 - **Docker** and **Docker Compose** installed.
-- **Docker** running (try Docker Desktop or Rancher Desktop).
+- **Docker** running (try starting Docker Desktop or Rancher Desktop) (Check with `docker info` command).
 - (Optional) NVIDIA GPU with container toolkit support for accelerated Ollama/Qdrant performance.
 
 ### Setup
