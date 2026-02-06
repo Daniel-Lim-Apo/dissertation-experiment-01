@@ -80,36 +80,47 @@ graph TD
 ## Key Components
 
 ### 🧠 AI & Agents
-*   **Ollama**: Local hosting of Large Language Models (LLMs) for inference.
-*   **CrewAI Multi-Agents** (`appcrewaimultiagents`): Orchestrates AI agents for complex reasoning tasks involving privacy analysis.
+
+- **Ollama**: Local hosting of Large Language Models (LLMs) for inference.
+- **CrewAI Multi-Agents** (`appcrewaimultiagents`): Orchestrates AI agents for complex reasoning tasks involving privacy analysis.
 
 ### 🔍 Vector Search & Database
-*   **Qdrant**: High-performance vector database used to store and search text embeddings.
-*   **Vector API** (`appVectorApi`): FastAPI service acting as the gateway for vectorization and search operations.
-*   **Visualizers**: `appVectorVisualizer` and `app-Qdrant-Visualizer` for exploring the vector space.
+
+- **Qdrant**: High-performance vector database used to store and search text embeddings.
+- **Vector API** (`appVectorApi`): FastAPI service acting as the gateway for vectorization and search operations.
+- **Visualizers**: `appVectorVisualizer` and `app-Qdrant-Visualizer` for exploring the vector space.
 
 ### ⚡ Distributed Processing
-*   **Dask**: Provides scalable parallel computing for processing large textual datasets (`daskscheduler`, `daskworker`).
+
+- **Dask**: Provides scalable parallel computing for processing large textual datasets (`daskscheduler`, `daskworker`).
 
 ## Installation & Usage
 
 ### Prerequisites
-*   **Docker** and **Docker Compose** installed.
-*   (Optional) NVIDIA GPU with container toolkit support for accelerated Ollama/Qdrant performance.
+
+- **Docker** and **Docker Compose** installed.
+- **Docker** running (try Docker Desktop or Rancher Desktop).
+- (Optional) NVIDIA GPU with container toolkit support for accelerated Ollama/Qdrant performance.
 
 ### Setup
 
 1.  **Clone the repository:**
+
     ```bash
     git clone <repository-url>
     cd <repository-directory>
     ```
 
 2.  **Configuration:**
-    Ensure you have the necessary data directories created or update the `docker-compose.yml` volumes to point to your local data paths:
+    The services in `src/docker-compose.yml` are configured to use specific host paths for data and output (e.g., `D:/DockerVolumes/privacy/RareEvents/data`).
+
+    > [!IMPORTANT]
+    > You must have these directories available on your host machine or create a new folder structure to use for the data. If you use a different path, you **must update all volume mappings** in [docker-compose.yml](src/docker-compose.yml) to match your local setup:
+
     ```yaml
     volumes:
-      - /path/to/your/data:/data
+      - /your/local/path/data:/data
+      - /your/local/path/output:/output
     ```
 
 3.  **Run the System:**
@@ -122,8 +133,8 @@ graph TD
 
 The system supports different experimental flows defined in the architecture:
 
-*   **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
-*   **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
+- **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
+- **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
 
 ```bash
 docker-compose ps
@@ -140,11 +151,11 @@ To reproduce the experimental results presented in the dissertation:
 
 This command does a forced cleanup of unused Docker resources on your system.
 
-2.  **Dataset Preparation**: 
-    
+2.  **Dataset Preparation**:
+
     > [!WARNING]
     > The original dataset used in this experiment contains **sensitive information** and is not publicly available. For reproducibility purposes, synthetic data can be generated following the specifications in [DATA_FORMAT.md](DATA_FORMAT.md).
-    
+
     Place the input CSV files in the `data/input` directory (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
@@ -163,27 +174,32 @@ This command does a forced cleanup of unused Docker resources on your system.
 Detailed documentation for each service in the `src` folder:
 
 ### Core Services
+
 - [app](src/app/README.md) - FastAPI service for text processing with Ollama and Qdrant
 - [appCrewaiMultiAgents](src/appCrewaiMultiAgents/README.md) - Multi-agent AI system using CrewAI
 - [appVectorApi](src/appVectorApi/README.md) - Vector API for Qdrant operations
 - [text_processor](src/text_processor/README.md) - RabbitMQ consumer for AI-based text processing
 
 ### Data Ingestion
+
 - [csv_reader](src/csv_reader/README.md) - Spark-based CSV to Parquet converter
 - [parquet_reader](src/parquet_reader/README.md) - Parquet file reader
 - [dask-csv-flow-2](src/dask-csv-flow-2/README.md) - Dask-based parallel CSV reader
 
 ### Vectorization
+
 - [text_vectorizer](src/text_vectorizer/README.md) - Text to vector embedding service
 - [text-vectorizer-flow-2](src/text-vectorizer-flow-2/README.md) - Alternative vectorization flow
 
 ### Analysis & Visualization
+
 - [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2/README.md) - Rare event detection
 - [app-Qqdrant-Analyzer](src/app-Qqdrant-Analyzer/README.md) - Vector data analysis
 - [app-Qdrant-Visualizer](src/app-Qdrant-Visualizer/README.md) - Qdrant visualization tool
 - [appVectorVisualizer](src/appVectorVisualizer/README.md) - Streamlit vector visualizer
 
 ### Distributed Computing
+
 - [daskscheduler](src/daskscheduler/README.md) - Dask cluster scheduler
 - [daskworker](src/daskworker/README.md) - General Dask worker
 - [daskcsvworker](src/daskcsvworker/README.md) - Specialized CSV worker
@@ -192,6 +208,7 @@ Detailed documentation for each service in the `src` folder:
 - [dask](src/dask/README.md) - Flexible library for parallel computing in Python that scales from single machines to large clusters
 
 ### Infrastructure
+
 - [ollama](src/ollama/README.md) - **Ollama** is a local runtime for running Large Language Models (LLMs) on your own infrastructure. It provides a simple API for text generation and embeddings, allowing you to use models like Llama3 without relying on external cloud services
 - [grafana](src/grafana/README.md) - **Grafana** is an open-source analytics and monitoring platform that provides interactive display of dashboards and metrics. It connects to Prometheus to display real-time metrics, system performance, and resource usage through customizable charts and graphs
 - [prometheus](src/prometheus/README.md) - **Prometheus** is an open-source monitoring and alerting toolkit that collects and stores metrics as time-series data. It scrapes metrics from configured services at specified intervals and provides a query language (PromQL) for data analysis
