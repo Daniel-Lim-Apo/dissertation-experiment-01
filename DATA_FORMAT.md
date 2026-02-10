@@ -37,7 +37,7 @@ The following table describes the fields required in the CSV file:
 This CSV file serves as the primary data source and is used to feed the processing workflows in the following scenarios:
 
 - **Flow 1 (With LLM AI agents)**: The CSV file is processed by `\dask-csv-flow-1`.
-- **Flow 2 (Without LLM AI agents)**: The CSV file is processed using `dask-csv-flow-2`, which handles the CSV ingestion and transformation pipeline.
+- **Flow 2 (Without LLM AI agents)**: The CSV file is processed using `dask-csv-worker-flow-2`, which handles the CSV ingestion and transformation pipeline.
 
 The CSV file contains the same fields that are later converted to JSON format for processing.
 

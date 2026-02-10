@@ -24,7 +24,7 @@ The experimental case study follows a 6-step AI-driven data processing pipeline:
    - [csv_reader](src/csv_reader) / [parquet_reader](src/parquet_reader): Services responsible for gathering data from various sources (CSV, Parquet) to feed the pipeline.
 
 2. **Parallelization for Reading**
-   - [dask-csv-flow-2](src/dask-csv-flow-2): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
+   - [dask-csv-worker-flow-2](src/dask-csv-worker-flow-2): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
 
 3. **AI Agents for Summarization**
    - [appCrewaiMultiAgents](src/appCrewaiMultiAgents): Deploys a crew of AI agents (using CrewAI) to synthesize and summarize textual data.
@@ -141,7 +141,7 @@ docker-compose ps
 The system's architecture supports different experimental flows. We defined two:
 
 - **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
-- **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
+- **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-worker-flow-2`, `text-vectorizer-flow-2`).
 
 ### Reproducibility
 
@@ -173,10 +173,10 @@ This command does a forced cleanup of unused Docker resources on your system.
     - D:/DockerVolumes/privacy/RareEvents/output:/output
 
     For flow-2:
-    See src\dask-csv-flow-2\reader.py entry point for the exact path to the input CSV file:
+    See src\dask-csv-worker-flow-2\reader.py entry point for the exact path to the input CSV file:
     csv_path = "/data/ocorrencias.csv"
 
-    in src\docker-compose.yml the same volumes for the container dask-csv-flow-2 are mapped to `/data` in the container:
+    in src\docker-compose.yml the same volumes for the container dask-csv-worker-flow-2 are mapped to `/data` in the container:
     volumes:
     - D:/DockerVolumes/privacy/RareEvents/data:/data
     - D:/DockerVolumes/privacy/RareEvents/output:/output
@@ -184,20 +184,29 @@ This command does a forced cleanup of unused Docker resources on your system.
     (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
-    - Start the `Flow 1` using `docker-compose -f .\docker-compose-base.yml up -d`, then `docker-compose -f .\docker-compose-dask-csv-flow-1.yml up -d`
+    - Start the base:
+      - `docker-compose -f .\docker-compose.yml up -d`
+        or just:
+        `docker-compose up -d`
+    - then the csv data ingestion:
+      - `docker compose -f docker-compose-base.yml up dask-csv-flow-1`
+    - Check the messagens in RabbitMQ in Get Messages:
+      - http://localhost:15672/#/queues/%2F/
 
     - For the `Flow 2`
-      - start the base:
-        - `docker-compose -f .\docker-compose-base.yml up -d`
+      - Start the base:
+        - `docker-compose -f .\docker-compose.yml up -d`
+          or just:
+          `docker-compose up -d`
       - then the csv data ingestion:
-        - `docker compose -f docker-compose-base.yml up dask-csv-flow-2`
+        - `docker compose -f docker-compose-base.yml up dask-csv-worker-flow-2`
       - Check the messagens in RabbitMQ in Get Messages:
         - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow_2
       - Start the text vectorizer:
         - `docker compose up text-vectorizer-flow-2`
 
 4.  **Reset Data**:
-    To reset the data, you can remove the collection:
+    To reset the data, and analyze a new dataset, you can remove the collection as following and then restart the process above:
     - Access the Qdrant
       - http://localhost:6333/dashboard#/collections
         and delete the collection:
@@ -222,7 +231,7 @@ Detailed documentation for each service in the `src` folder:
 
 - [csv_reader](src/csv_reader/README.md) - Spark-based CSV to Parquet converter
 - [parquet_reader](src/parquet_reader/README.md) - Parquet file reader
-- [dask-csv-flow-2](src/dask-csv-flow-2/README.md) - Dask-based parallel CSV reader
+- [dask-csv-worker-flow-2](src/dask-csv-worker-flow-2/README.md) - Dask-based parallel CSV reader
 
 ### Vectorization
 

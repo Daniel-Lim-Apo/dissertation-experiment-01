@@ -173,9 +173,9 @@ services:
 
   ###### Flow-2 - Begin ###################
 
-  dask-csv-flow-2:
+  dask-csv-worker-flow-2:
     build:
-      context: ./dask-csv-flow-2
+      context: ./dask-csv-worker-flow-2
       dockerfile: Dockerfile
     command: python reader.py
     networks:
