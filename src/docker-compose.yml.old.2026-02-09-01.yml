@@ -81,9 +81,9 @@ services:
     depends_on:
       - daskscheduler
 
-  daskcsvworker:
+  dask-csv-flow-1:
     build:
-      context: ./daskcsvworker
+      context: ./dask-csv-flow-1
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -218,7 +218,6 @@ services:
     depends_on:
       - qdrant
   ###### Flow-2 - End ###################
-
 
   # spark-master:
   #   image: bitnami/spark:latest
@@ -356,9 +355,9 @@ services:
   #   networks:
   #     - exp-net
 
-  # daskcsvworker:
+  # dask-csv-flow-1:
   #   build:
-  #     context: ./daskcsvworker
+  #     context: ./dask-csv-flow-1
   #     dockerfile: Dockerfile
   #   command: python reader.py
   #   volumes:

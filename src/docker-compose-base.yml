@@ -1,0 +1,165 @@
+services:
+  api:
+    build: ./app
+    ports:
+      - "18001:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - ollama
+      - qdrant
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    ports:
+      - "11434:11434"
+    networks:
+      - exp-net
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+    networks:
+      - exp-net
+    volumes:
+      - qdrant-data:/qdrant/storage
+    restart: unless-stopped
+
+  # Begin of Dask ***********
+  daskscheduler:
+    build:
+      context: ./daskscheduler
+      dockerfile: Dockerfile
+    ports:
+      - "18786:8786"
+      - "18787:8787"
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+
+  daskworker1:
+    build:
+      context: ./daskworker
+      dockerfile: Dockerfile
+    command: dask worker tcp://daskscheduler:8786
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+
+  daskworker2:
+    build:
+      context: ./daskworker
+      dockerfile: Dockerfile
+    command: dask worker tcp://daskscheduler:8786
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+
+  dasktest:
+    build:
+      context: ./dasktest
+      dockerfile: Dockerfile
+    command: python test_dask.py
+    networks:
+      - exp-net
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+
+  vectorapi:
+    build: ./appVectorApi
+    ports:
+      - "18002:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+      - daskscheduler
+
+  vectorvisualizer:
+    build: ./appVectorVisualizer
+    ports:
+      - "18003:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ Management UI
+    networks:
+      - exp-net
+    environment:
+      RABBITMQ_DEFAULT_USER: your_user
+      RABBITMQ_DEFAULT_PASS: your_strong_password
+    volumes:
+      # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  text-processor:
+    build:
+      context: ./text_processor
+    depends_on:
+      - rabbitmq
+      - appcrewaimultiagents
+      - ollama
+      - qdrant
+    networks:
+      - exp-net
+
+  text-vectorizer:
+    build: ./text_vectorizer
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  app-qdrant-visualizer:
+    build: ./app-Qdrant-Visualizer
+    ports:
+      - "18004:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  app-qdrant-analyzer:
+    build: ./app-Qqdrant-Analyzer
+    ports:
+      - "18005:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+networks:
+  exp-net:
+
+volumes:
+  ollama-data:
+  qdrant-data:

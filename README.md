@@ -124,21 +124,24 @@ graph TD
     ```
 
 3.  **Run the System:**
+
     ```bash
     cd src
     docker-compose up --build -d
     ```
 
-### Experimental Flows
-
-The system supports different experimental flows defined in the architecture:
-
-- **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
-- **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
+4.  **If you just want the status of the containers managed by the local docker-compose file, use:**
 
 ```bash
 docker-compose ps
 ```
+
+### Experimental Flows
+
+The system's architecture supports different experimental flows. We defined two:
+
+- **Standard Flow**: Starts the core API, Qdrant, and Dask cluster.
+- **Flow 2**: Starts the secondary experimental pipeline (`dask-csv-flow-2`, `text-vectorizer-flow-2`).
 
 ### Reproducibility
 
@@ -149,6 +152,8 @@ To reproduce the experimental results presented in the dissertation:
     docker system prune -f
     ```
 
+---
+
 This command does a forced cleanup of unused Docker resources on your system.
 
 2.  **Dataset Preparation**:
@@ -156,10 +161,30 @@ This command does a forced cleanup of unused Docker resources on your system.
     > [!WARNING]
     > The original dataset used in this experiment contains **sensitive information** and is not publicly available. For reproducibility purposes, synthetic data can be generated following the specifications in [DATA_FORMAT.md](DATA_FORMAT.md).
 
-    Place the input CSV files in the `data/input` directory (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
+    Place the input CSV files in the `data/input` directory
+
+    For flow-1:
+    See src\dask-csv-flow-1\reader.py entry point for the exact path to the input CSV file:
+    csv_path = "/data/ocorrencias.csv"
+
+    in src\docker-compose.yml the volumes for the container dask-csv-flow-1 are mapped to `/data` in the container:
+    volumes:
+    - D:/DockerVolumes/privacy/RareEvents/data:/data
+    - D:/DockerVolumes/privacy/RareEvents/output:/output
+
+    For flow-2:
+    See src\dask-csv-flow-2\reader.py entry point for the exact path to the input CSV file:
+    csv_path = "/data/ocorrencias.csv"
+
+    in src\docker-compose.yml the same volumes for the container dask-csv-flow-2 are mapped to `/data` in the container:
+    volumes:
+    - D:/DockerVolumes/privacy/RareEvents/data:/data
+    - D:/DockerVolumes/privacy/RareEvents/output:/output
+
+    (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
-    - Start the `Standard Flow` using `docker-compose up --build -d`.
+    - Start the `Flow 1` using `docker-compose up --build -d`.
     - Monitor the logs for `text_processor` to verify message processing:
       ```bash
       docker-compose logs -f text_processor
@@ -202,7 +227,7 @@ Detailed documentation for each service in the `src` folder:
 
 - [daskscheduler](src/daskscheduler/README.md) - Dask cluster scheduler
 - [daskworker](src/daskworker/README.md) - General Dask worker
-- [daskcsvworker](src/daskcsvworker/README.md) - Specialized CSV worker
+- [dask-csv-flow-1](src/dask-csv-flow-1/README.md) - Specialized CSV worker
 - [dasktest](src/dasktest/README.md) - Dask cluster connectivity test
 - [spark](src/spark/README.md) - Apache Spark cluster
 - [dask](src/dask/README.md) - Flexible library for parallel computing in Python that scales from single machines to large clusters

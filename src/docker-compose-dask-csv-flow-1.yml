@@ -1,0 +1,17 @@
+dask-csv-flow-1:
+  build:
+    context: ./dask-csv-flow-1
+    dockerfile: Dockerfile
+  command: python reader.py
+  networks:
+    - exp-net
+  volumes:
+    - D:/DockerVolumes/privacy/RareEvents/data:/data
+    - D:/DockerVolumes/privacy/RareEvents/output:/output
+  depends_on:
+    - daskscheduler
+    - daskworker1
+    - daskworker2
+
+networks:
+  exp-net:
