@@ -184,13 +184,26 @@ This command does a forced cleanup of unused Docker resources on your system.
     (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
-    - Start the `Flow 1` using `docker-compose up --build -d`.
-    - Monitor the logs for `text_processor` to verify message processing:
-      ```bash
-      docker-compose logs -f text_processor
-      ```
+    - Start the `Flow 1` using `docker-compose -f .\docker-compose-base.yml up -d`, then `docker-compose -f .\docker-compose-dask-csv-flow-1.yml up -d`
 
-4.  **Verification**:
+    - For the `Flow 2`
+      - start the base:
+        - `docker-compose -f .\docker-compose-base.yml up -d`
+      - then the csv data ingestion:
+        - `docker compose -f docker-compose-base.yml up dask-csv-flow-2`
+      - Check the messagens in RabbitMQ in Get Messages:
+        - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow_2
+      - Start the text vectorizer:
+        - `docker compose up text-vectorizer-flow-2`
+
+4.  **Reset Data**:
+    To reset the data, you can remove the collection:
+    - Access the Qdrant
+      - http://localhost:6333/dashboard#/collections
+        and delete the collection:
+        ocorrencias_historico_vectorized
+
+5.  **Verification**:
     - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
     - Use the visualizer at `http://localhost:8501` (Streamlit) to inspect the semantic clusters and detected rare events.
 
@@ -203,7 +216,7 @@ Detailed documentation for each service in the `src` folder:
 - [app](src/app/README.md) - FastAPI service for text processing with Ollama and Qdrant
 - [appCrewaiMultiAgents](src/appCrewaiMultiAgents/README.md) - Multi-agent AI system using CrewAI
 - [appVectorApi](src/appVectorApi/README.md) - Vector API for Qdrant operations
-- [text_processor](src/text_processor/README.md) - RabbitMQ consumer for AI-based text processing
+- [text_processor-flow-1](src/text_processor-flow-1/README.md) - RabbitMQ consumer for AI-based text processing
 
 ### Data Ingestion
 

@@ -1,0 +1,10 @@
+text_processor-flow-1:
+  build:
+    context: ./text_processor-flow-1
+  depends_on:
+    - rabbitmq
+    - appcrewaimultiagents
+    - ollama
+    - qdrant
+  networks:
+    - exp-net

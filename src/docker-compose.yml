@@ -1,3 +1,4 @@
+# Begin of Base
 services:
   api:
     build: ./app
@@ -117,17 +118,6 @@ services:
       - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
 
-  text-processor:
-    build:
-      context: ./text_processor
-    depends_on:
-      - rabbitmq
-      - appcrewaimultiagents
-      - ollama
-      - qdrant
-    networks:
-      - exp-net
-
   text-vectorizer:
     build: ./text_vectorizer
     depends_on:
@@ -156,6 +146,62 @@ services:
       - exp-net
     depends_on:
       - qdrant
+
+  # End of Base
+
+  # Begin Flow 1
+  ## Begin of Flow 1 Data Ingestion
+  dask-csv-flow-1:
+    build:
+      context: ./dask-csv-flow-1
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+
+  ## End of Flow 1 Data Ingestion
+
+  # End of Flow 1
+
+  # Begin Flow 2
+  ## Begin of Flow 2 Data Ingestion
+  dask-csv-flow-2:
+    build:
+      context: ./dask-csv-flow-2
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+  ## End of Flow 2 Data Ingestion
+  ## Begin of Flow 2 Text Vectorize
+  text-vectorizer-flow-2:
+    build: ./text-vectorizer-flow-2
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+## End of Flow 2 Text Vectorize
+
+# End of Flow 2
 
 networks:
   exp-net:

@@ -142,17 +142,6 @@ services:
       - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
 
-  text-processor:
-    build:
-      context: ./text_processor
-    depends_on:
-      - rabbitmq
-      - appcrewaimultiagents
-      - ollama
-      - qdrant
-    networks:
-      - exp-net
-
   text-vectorizer:
     build: ./text_vectorizer
     depends_on:
