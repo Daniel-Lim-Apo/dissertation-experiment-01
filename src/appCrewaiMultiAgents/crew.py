@@ -7,7 +7,7 @@ from langchain_ollama import OllamaLLM
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
-llm_config1 = OllamaLLM(model="ollama/llama3", base_url="http://ollama:11434") 
+llm_config1 = OllamaLLM(model="llama3", base_url="http://ollama:11434") 
 
 @CrewBase
 class PrivacyRareEventCrew():
