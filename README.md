@@ -184,14 +184,17 @@ This command does a forced cleanup of unused Docker resources on your system.
     (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
-    - Start the base:
-      - `docker-compose -f .\docker-compose.yml up -d`
-        or just:
-        `docker-compose up -d`
-    - then the csv data ingestion:
-      - `docker compose -f docker-compose-base.yml up dask-csv-worker-flow-1`
-    - Check the messagens in RabbitMQ in Get Messages:
-      - http://localhost:15672/#/queues/%2F/
+    - For the `Flow 2`
+      - Start the base:
+        - `docker-compose -f .\docker-compose.yml up -d`
+          or just:
+          `docker-compose up -d`
+      - then the csv data ingestion:
+        - `docker compose up dask-csv-worker-flow-1`
+        - Check the messagens in RabbitMQ in Get Messages:
+          - http://localhost:15672/#/queues/%2F/original_text_messages
+      - Process the original texts to summarize them:
+        - `docker compose up text-processor-flow-1`
 
     - For the `Flow 2`
       - Start the base:
@@ -199,7 +202,7 @@ This command does a forced cleanup of unused Docker resources on your system.
           or just:
           `docker-compose up -d`
       - then the csv data ingestion:
-        - `docker compose -f docker-compose-base.yml up dask-csv-worker-flow-2`
+        - `docker compose -f docker-compose.yml up dask-csv-worker-flow-2`
       - Check the messagens in RabbitMQ in Get Messages:
         - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow_2
       - Start the text vectorizer:
@@ -225,7 +228,7 @@ Detailed documentation for each service in the `src` folder:
 - [app](src/app/README.md) - FastAPI service for text processing with Ollama and Qdrant
 - [appCrewaiMultiAgents](src/appCrewaiMultiAgents/README.md) - Multi-agent AI system using CrewAI
 - [appVectorApi](src/appVectorApi/README.md) - Vector API for Qdrant operations
-- [text_processor-flow-1](src/text_processor-flow-1/README.md) - RabbitMQ consumer for AI-based text processing
+- [text-processor-flow-1](src/text-processor-flow-1/README.md) - RabbitMQ consumer for AI-based text processing
 
 ### Data Ingestion
 

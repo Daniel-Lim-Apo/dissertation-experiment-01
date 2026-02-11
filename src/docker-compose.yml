@@ -166,7 +166,32 @@ services:
       - daskworker1
       - daskworker2
 
-  ## End of Flow 1 Data Ingestion
+    ## End of Flow 1 Data Ingestion
+
+  ## Begin of appcrewaimultiagents
+  appcrewaimultiagents:
+    build: ./appcrewaimultiagents
+    ports:
+      - "18000:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - ollama
+      - qdrant
+  ## End of appcrewaimultiagents
+
+  ## Begin of text-processor-flow-1
+  text-processor-flow-1:
+    build:
+      context: ./text-processor-flow-1
+    networks:
+      - exp-net
+    depends_on:
+      - rabbitmq
+      - appcrewaimultiagents
+      - ollama
+      - qdrant
+  ## End of text-processor-flow-1
 
   # End of Flow 1
 
