@@ -164,10 +164,10 @@ This command does a forced cleanup of unused Docker resources on your system.
     Place the input CSV files in the `data/input` directory
 
     For flow-1:
-    See src\dask-csv-flow-1\reader.py entry point for the exact path to the input CSV file:
+    See src\dask-csv-worker-flow-1\reader.py entry point for the exact path to the input CSV file:
     csv_path = "/data/ocorrencias.csv"
 
-    in src\docker-compose.yml the volumes for the container dask-csv-flow-1 are mapped to `/data` in the container:
+    in src\docker-compose.yml the volumes for the container dask-csv-worker-flow-1 are mapped to `/data` in the container:
     volumes:
     - D:/DockerVolumes/privacy/RareEvents/data:/data
     - D:/DockerVolumes/privacy/RareEvents/output:/output
@@ -189,7 +189,7 @@ This command does a forced cleanup of unused Docker resources on your system.
         or just:
         `docker-compose up -d`
     - then the csv data ingestion:
-      - `docker compose -f docker-compose-base.yml up dask-csv-flow-1`
+      - `docker compose -f docker-compose-base.yml up dask-csv-worker-flow-1`
     - Check the messagens in RabbitMQ in Get Messages:
       - http://localhost:15672/#/queues/%2F/
 
@@ -249,7 +249,7 @@ Detailed documentation for each service in the `src` folder:
 
 - [daskscheduler](src/daskscheduler/README.md) - Dask cluster scheduler
 - [daskworker](src/daskworker/README.md) - General Dask worker
-- [dask-csv-flow-1](src/dask-csv-flow-1/README.md) - Specialized CSV worker
+- [dask-csv-worker-flow-1](src/dask-csv-worker-flow-1/README.md) - Specialized CSV worker
 - [dasktest](src/dasktest/README.md) - Dask cluster connectivity test
 - [spark](src/spark/README.md) - Apache Spark cluster
 - [dask](src/dask/README.md) - Flexible library for parallel computing in Python that scales from single machines to large clusters

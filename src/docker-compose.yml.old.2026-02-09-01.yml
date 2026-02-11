@@ -81,9 +81,9 @@ services:
     depends_on:
       - daskscheduler
 
-  dask-csv-flow-1:
+  dask-csv-worker-flow-1:
     build:
-      context: ./dask-csv-flow-1
+      context: ./dask-csv-worker-flow-1
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -344,9 +344,9 @@ services:
   #   networks:
   #     - exp-net
 
-  # dask-csv-flow-1:
+  # dask-csv-worker-flow-1:
   #   build:
-  #     context: ./dask-csv-flow-1
+  #     context: ./dask-csv-worker-flow-1
   #     dockerfile: Dockerfile
   #   command: python reader.py
   #   volumes:
