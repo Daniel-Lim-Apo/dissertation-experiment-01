@@ -190,11 +190,15 @@ This command does a forced cleanup of unused Docker resources on your system.
           or just:
           `docker-compose up -d`
       - then the csv data ingestion:
-        - `docker compose up dask-csv-worker-flow-1`
+        - `docker compose up dask-csv-worker-flow-1 -d`
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/original_text_messages
       - Process the original texts to summarize them:
-        - `docker compose up text-processor-flow-1`
+        - `docker compose up text-processor-flow-1 -d`
+        - Check the messagens in RabbitMQ in Get Messages:
+          - http://localhost:15672/#/queues/%2F/summary_text_messages
+
+docker-compose up text-processor-flow-1 -d
 
     - For the `Flow 2`
       - Start the base:
