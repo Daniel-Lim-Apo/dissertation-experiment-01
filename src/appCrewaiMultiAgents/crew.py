@@ -8,9 +8,17 @@ from langchain_ollama import OllamaLLM
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
 
 # llm_config1 = OllamaLLM(model="llama3", base_url="http://ollama:11434") 
+# llm_config1 = OllamaLLM(
+#     model=os.getenv("OLLAMA_MODEL", "llama3:latest"),
+#     base_url=os.getenv("OLLAMA_BASE_URL", "http://ollama:11434/v1")
+# )
+
 llm_config1 = OllamaLLM(
-    model=os.getenv("OLLAMA_MODEL", "llama3:latest"),
-    base_url=os.getenv("OLLAMA_BASE_URL", "http://ollama:11434/v1")
+    model=os.getenv("OLLAMA_MODEL", "llama3-gradient:latest"),
+    base_url=os.getenv("OLLAMA_BASE_URL", "http://ollama:11434/v1"),
+    temperature=0.1,
+    num_predict=512,
+    top_p=0.9
 )
 
 @CrewBase

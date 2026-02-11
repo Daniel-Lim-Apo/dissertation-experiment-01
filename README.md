@@ -33,7 +33,7 @@ The experimental case study follows a 6-step AI-driven data processing pipeline:
    - [docker-compose.yml](src/docker-compose.yml): The entire multi-agent system and microservices are containerized and orchestrated for scalability and ease of deployment.
 
 5. **Vectorization with Parallel Computing**
-   - [text_vectorizer](src/text_vectorizer): Converts processed text into high-dimensional vectors using parallel computing techniques for efficient storage in Qdrant.
+   - [text-vectorizer-flow-1](src/text-vectorizer-flow-1): Converts processed text into high-dimensional vectors using parallel computing techniques for efficient storage in Qdrant.
 
 6. **Rare Events Detection**
    - [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2): Identifies rare events or outliers within the vectorized data stored in Qdrant.
@@ -242,7 +242,7 @@ Detailed documentation for each service in the `src` folder:
 
 ### Vectorization
 
-- [text_vectorizer](src/text_vectorizer/README.md) - Text to vector embedding service
+- [text-vectorizer-flow-1](src/text-vectorizer-flow-1/README.md) - Text to vector embedding service
 - [text-vectorizer-flow-2](src/text-vectorizer-flow-2/README.md) - Alternative vectorization flow
 
 ### Analysis & Visualization

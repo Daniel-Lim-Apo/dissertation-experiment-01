@@ -118,17 +118,6 @@ services:
       - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
     restart: unless-stopped
 
-  text-vectorizer:
-    build: ./text_vectorizer
-    depends_on:
-      - rabbitmq
-      - daskscheduler
-      - qdrant
-    networks:
-      - exp-net
-    environment:
-      - PYTHONUNBUFFERED=1
-
   app-qdrant-visualizer:
     build: ./app-Qdrant-Visualizer
     ports:
@@ -192,6 +181,19 @@ services:
       - ollama
       - qdrant
   ## End of text-processor-flow-1
+
+  ## Begin of Flow 1 Text Vectorize
+  text-vectorizer-flow-1:
+    build: ./text-vectorizer-flow-1
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+  ## End of Flow 1 Text Vectorize
 
   # End of Flow 1
 
