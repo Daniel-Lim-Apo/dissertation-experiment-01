@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-WORKDIR /text-vectorizer-flow-1
+WORKDIR /text-vectorizer-flow-2-With-AI
 
 ENV TZ=America/Sao_Paulo
 

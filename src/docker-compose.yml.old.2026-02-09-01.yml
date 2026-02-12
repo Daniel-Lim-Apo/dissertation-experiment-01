@@ -81,9 +81,9 @@ services:
     depends_on:
       - daskscheduler
 
-  dask-csv-worker-flow-1:
+  dask-csv-worker-flow-2-with-ai:
     build:
-      context: ./dask-csv-worker-flow-1
+      context: ./dask-csv-worker-flow-2-with-ai
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -143,7 +143,7 @@ services:
     restart: unless-stopped
 
   text-vectorizer:
-    build: ./text-vectorizer-flow-1
+    build: ./text-vectorizer-flow-2-With-AI
     depends_on:
       - rabbitmq
       - daskscheduler
@@ -173,9 +173,9 @@ services:
 
   ###### Flow-2 - Begin ###################
 
-  dask-csv-worker-flow-2:
+  dask-csv-worker-flow-1-Without-AI:
     build:
-      context: ./dask-csv-worker-flow-2
+      context: ./dask-csv-worker-flow-1-Without-AI
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -187,8 +187,8 @@ services:
       - daskscheduler
       - daskworker1
       - daskworker2
-  text-vectorizer-flow-2:
-    build: ./text-vectorizer-flow-2
+  text-vectorizer-flow-1-Without-AI:
+    build: ./text-vectorizer-flow-1-Without-AI
     depends_on:
       - rabbitmq
       - daskscheduler
@@ -198,7 +198,7 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
 
-  app-qdrant-analyzer-flow-2:
+  app-qdrant-analyzer-flow-1-Without-AI:
     build: ./app-Qdrant-Analyzer-Flow-2
     ports:
       - "19005:8000"
@@ -344,9 +344,9 @@ services:
   #   networks:
   #     - exp-net
 
-  # dask-csv-worker-flow-1:
+  # dask-csv-worker-flow-2-with-ai:
   #   build:
-  #     context: ./dask-csv-worker-flow-1
+  #     context: ./dask-csv-worker-flow-2-with-ai
   #     dockerfile: Dockerfile
   #   command: python reader.py
   #   volumes:

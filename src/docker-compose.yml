@@ -1,14 +1,14 @@
 # Begin of Base
 services:
-  api:
-    build: ./app
-    ports:
-      - "18001:8000"
-    networks:
-      - exp-net
-    depends_on:
-      - ollama
-      - qdrant
+  # api:
+  #   build: ./app
+  #   ports:
+  #     - "18001:8000"
+  #   networks:
+  #     - exp-net
+  #   depends_on:
+  #     - ollama
+  #     - qdrant
 
   ollama:
     build:
@@ -140,9 +140,9 @@ services:
 
   # Begin Flow 1
   ## Begin of Flow 1 Data Ingestion
-  dask-csv-worker-flow-1:
+  dask-csv-worker-flow-2-with-ai:
     build:
-      context: ./dask-csv-worker-flow-1
+      context: ./dask-csv-worker-flow-2-with-ai
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -169,10 +169,10 @@ services:
       - qdrant
   ## End of appcrewaimultiagents
 
-  ## Begin of text-processor-flow-1
-  text-processor-flow-1:
+  ## Begin of text-processor-flow-2-With-AI
+  text-processor-flow-2-With-AI:
     build:
-      context: ./text-processor-flow-1
+      context: ./text-processor-flow-2-With-AI
     networks:
       - exp-net
     depends_on:
@@ -180,11 +180,11 @@ services:
       - appcrewaimultiagents
       - ollama
       - qdrant
-  ## End of text-processor-flow-1
+  ## End of text-processor-flow-2-With-AI
 
   ## Begin of Flow 1 Text Vectorize
-  text-vectorizer-flow-1:
-    build: ./text-vectorizer-flow-1
+  text-vectorizer-flow-2-With-AI:
+    build: ./text-vectorizer-flow-2-With-AI
     depends_on:
       - rabbitmq
       - daskscheduler
@@ -199,9 +199,9 @@ services:
 
   # Begin Flow 2
   ## Begin of Flow 2 Data Ingestion
-  dask-csv-worker-flow-2:
+  dask-csv-worker-flow-1-Without-AI:
     build:
-      context: ./dask-csv-worker-flow-2
+      context: ./dask-csv-worker-flow-1-Without-AI
       dockerfile: Dockerfile
     command: python reader.py
     networks:
@@ -215,8 +215,8 @@ services:
       - daskworker2
   ## End of Flow 2 Data Ingestion
   ## Begin of Flow 2 Text Vectorize
-  text-vectorizer-flow-2:
-    build: ./text-vectorizer-flow-2
+  text-vectorizer-flow-1-Without-AI:
+    build: ./text-vectorizer-flow-1-Without-AI
     depends_on:
       - rabbitmq
       - daskscheduler
