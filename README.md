@@ -194,7 +194,7 @@ This command does a forced cleanup of unused Docker resources on your system.
         - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph)
 
       - then the csv data ingestion:
-        - `docker compose up dask-csv-worker-flow-1-without-ai`
+        - `docker compose up dask-csv-worker-flow-1-without-ai -d`
       - Check the messagens in RabbitMQ in Get Messages:
         - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow-1-without-ai
       - Start the text vectorizer:
