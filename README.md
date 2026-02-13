@@ -205,7 +205,7 @@ This command does a forced cleanup of unused Docker resources on your system.
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
       - If you want know if Dask is working:
-        - `docker compose up dasktest`
+        - `docker compose up dasktest -d`
         - See [dasktest/README.md](src/dasktest/README.md)
         - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph).
 
