@@ -186,9 +186,7 @@ This command does a forced cleanup of unused Docker resources on your system.
 3.  **Execution**:
     - For the `Flow 1 - Without AI`
       - Start the base:
-        - `docker-compose -f .\docker-compose.yml up -d`
-          or just:
-          `docker-compose up -d`
+        - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
       - If you want know if Dask is working:
         - `docker compose up dasktest`
@@ -203,7 +201,7 @@ This command does a forced cleanup of unused Docker resources on your system.
 
     - For the `Flow 2 - With AI`
       - Start the base:
-        - `###Todo: Change it to be only the needed containers ### docker-compose -f .\docker-compose.yml up -d`
+        - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
           or just:
           `docker-compose up -d`
       - then the csv data ingestion:
@@ -224,9 +222,8 @@ This command does a forced cleanup of unused Docker resources on your system.
         and delete the collection:
         ocorrencias_historico_vectorized
 
-5.  **Verification**:
+5.  **Verification of flow-2-With-AI **:
     - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
-    - Use the visualizer at `http://localhost:8501` (Streamlit) to inspect the semantic clusters and detected rare events.
 
 ## Service Directory
 

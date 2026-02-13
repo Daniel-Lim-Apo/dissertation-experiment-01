@@ -72,6 +72,24 @@ services:
     depends_on:
       - daskscheduler
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ Management UI
+    networks:
+      - exp-net
+    environment:
+      RABBITMQ_DEFAULT_USER: your_user
+      RABBITMQ_DEFAULT_PASS: your_strong_password
+    volumes:
+      # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  # End of Base
+
+  # Begin of Extras
   dasktest:
     build:
       context: ./dasktest
@@ -103,21 +121,6 @@ services:
     depends_on:
       - qdrant
 
-  rabbitmq:
-    image: rabbitmq:3-management
-    ports:
-      - "5672:5672" # RabbitMQ messaging port
-      - "15672:15672" # RabbitMQ Management UI
-    networks:
-      - exp-net
-    environment:
-      RABBITMQ_DEFAULT_USER: your_user
-      RABBITMQ_DEFAULT_PASS: your_strong_password
-    volumes:
-      # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
-      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
-    restart: unless-stopped
-
   app-qdrant-visualizer:
     build: ./app-Qdrant-Visualizer
     ports:
@@ -135,8 +138,7 @@ services:
       - exp-net
     depends_on:
       - qdrant
-
-  # End of Base
+  # End of Extras
 
   # Begin Flow 1
   ## Begin of Flow 1 Data Ingestion
