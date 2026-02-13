@@ -196,7 +196,7 @@ This command does a forced cleanup of unused Docker resources on your system.
       - then the csv data ingestion:
         - `docker compose up dask-csv-worker-flow-1-without-ai -d`
       - Check the messagens in RabbitMQ in Get Messages:
-        - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow-1-without-ai
+        - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow_1_without_ai
       - Start the text vectorizer:
         - `docker compose up text-vectorizer-flow-1-without-ai -d`
 
