@@ -201,9 +201,9 @@ services:
 
   # Begin Flow 2
   ## Begin of Flow 2 Data Ingestion
-  dask-csv-worker-flow-1-Without-AI:
+  dask-csv-worker-flow-1-without-ai:
     build:
-      context: ./dask-csv-worker-flow-1-Without-AI
+      context: ./dask-csv-worker-flow-1-without-ai
       dockerfile: Dockerfile
     command: python reader.py
     networks:
