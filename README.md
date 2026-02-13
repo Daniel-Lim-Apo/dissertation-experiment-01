@@ -191,6 +191,7 @@ This command does a forced cleanup of unused Docker resources on your system.
       - If you want know if Dask is working:
         - `docker compose up dasktest`
         - See [dasktest/README.md](src/dasktest/README.md)
+        - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph)
 
       - then the csv data ingestion:
         - `docker compose -f docker-compose.yml up dask-csv-worker-flow-1-Without-AI`
@@ -202,9 +203,15 @@ This command does a forced cleanup of unused Docker resources on your system.
     - For the `Flow 2 - With AI`
       - Start the base:
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
-          or just:
-          `docker-compose up -d`
+
+      - If you want know if Dask is working:
+        - `docker compose up dasktest`
+        - See [dasktest/README.md](src/dasktest/README.md)
+        - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph).
+
       - then the csv data ingestion:
+        - First prepare the data as explained in the Dataset Preparation section.
+        - Then run:
         - `docker compose up dask-csv-worker-flow-2-with-ai -d`
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/original_text_messages
