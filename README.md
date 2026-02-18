@@ -220,13 +220,13 @@ This command does a forced cleanup of unused Docker resources on your system.
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/original_text_messages
       - Process the original texts to summarize them:
-        - `docker compose build text-processor-flow-2-With-AI`
-        - `docker compose up text-processor-flow-2-With-AI -d`
+        - `docker compose build text-processor-flow-2-with-ai`
+        - `docker compose up text-processor-flow-2-with-ai -d`
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/summary_text_messages
         - Start the text vectorizer:
-          - `docker compose build text-vectorizer-flow-2-With-AI`
-          - `docker compose up text-vectorizer-flow-2-With-AI -d`
+          - `docker compose build text-vectorizer-flow-2-with-ai`
+          - `docker compose up text-vectorizer-flow-2-with-ai -d`
 
 4.  **Reset Data**:
     To reset the data, and analyze a new dataset, you can remove the collection as following and then restart the process above:
