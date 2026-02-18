@@ -171,10 +171,10 @@ services:
       - qdrant
   ## End of appcrewaimultiagents
 
-  ## Begin of text-processor-flow-2-With-AI
-  text-processor-flow-2-With-AI:
+  ## Begin of text-processor-flow-2-with-ai
+  text-processor-flow-2-with-ai:
     build:
-      context: ./text-processor-flow-2-With-AI
+      context: ./text-processor-flow-2-with-ai
     networks:
       - exp-net
     depends_on:
@@ -182,11 +182,11 @@ services:
       - appcrewaimultiagents
       - ollama
       - qdrant
-  ## End of text-processor-flow-2-With-AI
+  ## End of text-processor-flow-2-with-ai
 
-  ## Begin of Flow 1 Text Vectorize
-  text-vectorizer-flow-2-With-AI:
-    build: ./text-vectorizer-flow-2-With-AI
+  ## Begin of Flow 1 Text Vectorize Without AI
+  text-vectorizer-flow-1-without-ai:
+    build: ./text-vectorizer-flow-1-without-ai
     depends_on:
       - rabbitmq
       - daskscheduler
@@ -195,7 +195,8 @@ services:
       - exp-net
     environment:
       - PYTHONUNBUFFERED=1
-  ## End of Flow 1 Text Vectorize
+
+  ## End of Flow 1 Text Vectorize Without AI
 
   # End of Flow 1
 
@@ -216,9 +217,9 @@ services:
       - daskworker1
       - daskworker2
   ## End of Flow 2 Data Ingestion
-  ## Begin of Flow 2 Text Vectorize
-  text-vectorizer-flow-1-Without-AI:
-    build: ./text-vectorizer-flow-1-Without-AI
+  ## Begin of Flow 2 Text Vectorize With AI
+  text-vectorizer-flow-2-with-ai:
+    build: ./text-vectorizer-flow-2-with-ai
     depends_on:
       - rabbitmq
       - daskscheduler

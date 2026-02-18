@@ -200,6 +200,9 @@ This command does a forced cleanup of unused Docker resources on your system.
       - Start the text vectorizer:
         - `docker compose up text-vectorizer-flow-1-without-ai -d`
 
+      - **Verification of flow-1-Without-AI**:
+        - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
+
     - For the `Flow 2 - With AI`
       - Start the base:
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`

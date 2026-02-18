@@ -15,7 +15,7 @@ RABBITMQ_HOST = "rabbitmq"
 RABBITMQ_USER = "your_user"
 RABBITMQ_PASS = "your_strong_password"
 INPUT_QUEUE = "ocorrencias_historico_collection_flow_1_without_ai"
-
+text-vectorizer-flow-1-without-ai
 QDRANT_HOST = "qdrant"
 QDRANT_PORT = 6333
 QDRANT_COLLECTION = "ocorrencias_historico_vectorized"
