@@ -183,6 +183,11 @@ This command does a forced cleanup of unused Docker resources on your system.
         - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
+      - Start the crewai containers (needed just for flow 2):
+        - If you do not have changes you can just skip the build command lines:
+        - `docker-compose build appcrewaimultiagents`
+        - `docker-compose up appcrewaimultiagents -d`
+
       - If you want know if Dask is working:
         - `docker compose build dasktest`
         - `docker compose up dasktest -d`
