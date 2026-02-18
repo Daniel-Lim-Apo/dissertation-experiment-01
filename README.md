@@ -179,6 +179,7 @@ This command does a forced cleanup of unused Docker resources on your system.
 3.  **Execution**:
     - For the `Flow 1 - Without AI`
       - Start the base:
+        - If you do not have changes you can just skip the build command lines:
         - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
