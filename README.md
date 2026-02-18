@@ -123,14 +123,7 @@ graph TD
       - /your/local/path/output:/output
     ```
 
-3.  **Run the System:**
-
-    ```bash
-    cd src
-    docker-compose up --build -d
-    ```
-
-4.  **If you just want the status of the containers managed by the local docker-compose file, use:**
+3.  **If you just want the status of the containers managed by the local docker-compose file, use:**
 
 ```bash
 docker-compose ps
@@ -186,20 +179,22 @@ This command does a forced cleanup of unused Docker resources on your system.
 3.  **Execution**:
     - For the `Flow 1 - Without AI`
       - Start the base:
+        - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
       - If you want know if Dask is working:
+        - `docker compose build dasktest`
         - `docker compose up dasktest -d`
         - See [dasktest/README.md](src/dasktest/README.md)
         - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph)
 
       - then the csv data ingestion:
-        - `docker compose build dask-csv-worker-flow-1-without-ai -d`
+        - `docker compose build dask-csv-worker-flow-1-without-ai`
         - `docker compose up dask-csv-worker-flow-1-without-ai -d`
       - Check the messagens in RabbitMQ in Get Messages:
         - http://localhost:15672/#/queues/%2F/ocorrencias_historico_collection_flow_1_without_ai
       - Start the text vectorizer:
-        - `docker compose build text-vectorizer-flow-1-without-ai -d`
+        - `docker compose build text-vectorizer-flow-1-without-ai`
         - `docker compose up text-vectorizer-flow-1-without-ai -d`
 
       - **Verification of flow-1-Without-AI**:
@@ -207,11 +202,11 @@ This command does a forced cleanup of unused Docker resources on your system.
 
     - For the `Flow 2 - With AI`
       - Start the base:
-        - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
+        - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
         - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
 
       - If you want know if Dask is working:
-        - `docker compose build dasktest -d`
+        - `docker compose build dasktest`
         - `docker compose up dasktest -d`
         - See [dasktest/README.md](src/dasktest/README.md)
         - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph).
@@ -219,17 +214,17 @@ This command does a forced cleanup of unused Docker resources on your system.
       - then the csv data ingestion:
         - First prepare the data as explained in the Dataset Preparation section.
         - Then run:
-        - `docker compose build dask-csv-worker-flow-2-with-ai -d`
+        - `docker compose build dask-csv-worker-flow-2-with-ai`
         - `docker compose up dask-csv-worker-flow-2-with-ai -d`
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/original_text_messages
       - Process the original texts to summarize them:
-        - `docker compose build text-processor-flow-2-With-AI -d`
+        - `docker compose build text-processor-flow-2-With-AI`
         - `docker compose up text-processor-flow-2-With-AI -d`
         - Check the messagens in RabbitMQ in Get Messages:
           - http://localhost:15672/#/queues/%2F/summary_text_messages
         - Start the text vectorizer:
-          - `docker compose build text-vectorizer-flow-2-With-AI -d`
+          - `docker compose build text-vectorizer-flow-2-With-AI`
           - `docker compose up text-vectorizer-flow-2-With-AI -d`
 
 4.  **Reset Data**:
