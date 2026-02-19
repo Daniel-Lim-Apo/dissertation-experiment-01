@@ -56,13 +56,13 @@ def setup_rabbitmq():
             channel.queue_declare(queue=INPUT_QUEUE, durable=True)
             channel.queue_declare(queue=OUTPUT_QUEUE, durable=True)
 
-            log("✅ Connected to RabbitMQ.")
+            log("Connected to RabbitMQ.")
             return connection, channel
         except Exception as e:
             log(f"[!] Failed to connect to RabbitMQ: {e}")
             attempt += 1
             time.sleep(RETRY_DELAY)
-    raise RuntimeError("❌ Could not establish RabbitMQ connection after retries.")
+    raise RuntimeError("Could not establish RabbitMQ connection after retries.")
 
 def format_duration(seconds):
     """
@@ -109,7 +109,7 @@ def process_message(body, script_start_time, processing_batch):
     msg = json.loads(body)
     historico = msg.get("historico")
     if not historico:
-        log("⚠️ Skipping message: 'historico' is empty.")
+        log("Skipping message: 'historico' is empty.")
         return None
 
     metadata = {
@@ -130,13 +130,13 @@ def process_message(body, script_start_time, processing_batch):
         processing_time = api_end_time - api_start_time
 
         if response.status_code != 200:
-            log(f"❌ CrewAI API error: {response.status_code} - {response.text}")
+            log(f"CrewAI API error: {response.status_code} - {response.text}")
             return None
 
         result = response.json()
         summary = result.get("summary")
         if not summary:
-            log("⚠️ CrewAI response missing 'summary'.")
+            log("CrewAI response missing 'summary'.")
             return None
 
         total_time = time.time() - script_start_time
@@ -153,7 +153,7 @@ def process_message(body, script_start_time, processing_batch):
         }
 
     except Exception as e:
-        log(f"🔥 Exception during API call: {e}")
+        log(f"Exception during API call: {e}")
         traceback.print_exc(file=sys.stdout)
         return None
 
@@ -167,7 +167,7 @@ def main():
     """
     script_start_time = time.time()
     processing_batch = generate_batch_id(datetime.now())
-    log(f"🚀 Starting processing batch: {processing_batch}")
+    log(f"Starting processing batch: {processing_batch}")
 
     try:
         connection, channel = setup_rabbitmq()
@@ -182,7 +182,7 @@ def main():
             method_frame, header_frame, body = channel.basic_get(queue=INPUT_QUEUE, auto_ack=False)
 
             if method_frame:
-                log("📥 Message received. Processing...")
+                log("Message received. Processing...")
                 result = process_message(body, script_start_time, processing_batch)
 
                 if result:
@@ -195,38 +195,38 @@ def main():
                             content_type='application/json'
                         )
                     )
-                    log(f"✅ Processed and published: {result['numero']}")
+                    log(f"Processed and published: {result['numero']}")
                 else:
-                    log("⚠️ Processing failed. Message will be re-queued or dead-lettered.")
+                    log("Processing failed. Message will be re-queued or dead-lettered.")
 
                 # Acknowledge if still valid
                 if channel.is_open:
                     channel.basic_ack(delivery_tag=method_frame.delivery_tag)
                 else:
-                    log("⚠️ Skipping ack: channel was closed mid-processing.")
+                    log("Skipping ack: channel was closed mid-processing.")
 
                 idle_attempts = 0
             else:
                 idle_attempts += 1
-                log(f"⏳ No message. Sleeping {WAIT_SECONDS}s (attempt {idle_attempts}/{MAX_IDLE_ATTEMPTS})")
+                log(f"No message. Sleeping {WAIT_SECONDS}s (attempt {idle_attempts}/{MAX_IDLE_ATTEMPTS})")
                 time.sleep(WAIT_SECONDS)
 
         except pika.exceptions.AMQPConnectionError as conn_err:
-            log(f"🔌 Lost RabbitMQ connection: {conn_err}")
+            log(f"Lost RabbitMQ connection: {conn_err}")
             try:
                 connection, channel = setup_rabbitmq()
                 idle_attempts = 0
             except Exception as e:
-                log(f"❌ Reconnection failed: {e}")
+                log(f"Reconnection failed: {e}")
                 break
 
         except Exception as e:
-            log(f"🔥 Unexpected error: {e}")
+            log(f"Unexpected error: {e}")
             traceback.print_exc(file=sys.stdout)
 
     final_time = time.time() - script_start_time
-    log("🛑 No new messages. Exiting.")
-    log(f"🕓 Runtime: {round(final_time, 3)}s ({format_duration(final_time)})")
+    log("No new messages. Exiting.")
+    log(f"Runtime: {round(final_time, 3)}s ({format_duration(final_time)})")
 
     try:
         connection.close()

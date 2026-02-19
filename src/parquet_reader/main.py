@@ -25,12 +25,12 @@ def connect_with_retry(max_retries=MAX_RETRIES):
             return connection, channel
         except pika.exceptions.AMQPConnectionError as e:
             delay = RETRY_BASE_DELAY * (2 ** attempt)
-            print(f"⚠️  RabbitMQ connection failed (attempt {attempt + 1}/{max_retries}): {e}")
-            print(f"⏳ Retrying in {delay} seconds...")
+            print(f"RabbitMQ connection failed (attempt {attempt + 1}/{max_retries}): {e}")
+            print(f"Retrying in {delay} seconds...")
             time.sleep(delay)
             attempt += 1
 
-    print("❌ All RabbitMQ connection attempts failed. Exiting.")
+    print("All RabbitMQ connection attempts failed. Exiting.")
     sys.exit(1)
 
 def send_batch(messages):
@@ -49,26 +49,26 @@ def send_batch(messages):
                 properties=pika.BasicProperties(delivery_mode=2)
             )
         except Exception as e:
-            print(f"❌ Failed to send message: {e}")
+            print(f"Failed to send message: {e}")
 
     connection.close()
-    print(f"✅ Sent {len(messages)} messages to RabbitMQ.")
+    print(f"Sent {len(messages)} messages to RabbitMQ.")
 
 def main():
-    print("🔄 Starting Spark session...")
+    print("Starting Spark session...")
     spark = SparkSession.builder \
         .appName("Parquet to RabbitMQ - Streamed w/ Retry") \
         .master("spark://spark-master:7077") \
         .getOrCreate()
 
     try:
-        print(f"📥 Reading Parquet from: {PARQUET_PATH}")
+        print(f"Reading Parquet from: {PARQUET_PATH}")
         df = spark.read.parquet(PARQUET_PATH)
     except AnalysisException as e:
-        print(f"❌ Failed to read Parquet: {e}")
+        print(f"Failed to read Parquet: {e}")
         return
 
-    print("🔁 Streaming rows to RabbitMQ in batches with retry...")
+    print("Streaming rows to RabbitMQ in batches with retry...")
 
     buffer = []
     count = 0
@@ -85,7 +85,7 @@ def main():
     if buffer:
         send_batch(buffer)
 
-    print(f"✅ Finished. Total messages sent: {count}")
+    print(f"Finished. Total messages sent: {count}")
 
 if __name__ == "__main__":
     main()

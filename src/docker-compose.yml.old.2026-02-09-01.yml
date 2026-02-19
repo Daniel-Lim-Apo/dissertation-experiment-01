@@ -1,0 +1,367 @@
+services:
+  api:
+    build: ./app
+    ports:
+      - "18001:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - ollama
+      - qdrant
+
+  appcrewaimultiagents:
+    build: ./appcrewaimultiagents
+    ports:
+      - "18000:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - ollama
+      - qdrant
+
+  ollama:
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
+    ports:
+      - "11434:11434"
+    networks:
+      - exp-net
+    volumes:
+      - ollama-data:/root/.ollama
+    restart: unless-stopped
+
+  qdrant:
+    image: qdrant/qdrant
+    ports:
+      - "6333:6333"
+    networks:
+      - exp-net
+    volumes:
+      - qdrant-data:/qdrant/storage
+    restart: unless-stopped
+
+  # Begin of Dask ***********
+  daskscheduler:
+    build:
+      context: ./daskscheduler
+      dockerfile: Dockerfile
+    ports:
+      - "18786:8786"
+      - "18787:8787"
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+
+  daskworker1:
+    build:
+      context: ./daskworker
+      dockerfile: Dockerfile
+    command: dask worker tcp://daskscheduler:8786
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+
+  daskworker2:
+    build:
+      context: ./daskworker
+      dockerfile: Dockerfile
+    command: dask worker tcp://daskscheduler:8786
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+
+  dask-csv-worker-flow-2-with-ai:
+    build:
+      context: ./dask-csv-worker-flow-2-with-ai
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+
+  dasktest:
+    build:
+      context: ./dasktest
+      dockerfile: Dockerfile
+    command: python test_dask.py
+    networks:
+      - exp-net
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+
+  vectorapi:
+    build: ./appVectorApi
+    ports:
+      - "18002:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+      - daskscheduler
+
+  vectorvisualizer:
+    build: ./appVectorVisualizer
+    ports:
+      - "18003:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672" # RabbitMQ messaging port
+      - "15672:15672" # RabbitMQ Management UI
+    networks:
+      - exp-net
+    environment:
+      RABBITMQ_DEFAULT_USER: your_user
+      RABBITMQ_DEFAULT_PASS: your_strong_password
+    volumes:
+      # - /d/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+    restart: unless-stopped
+
+  text-vectorizer:
+    build: ./text-vectorizer-flow-2-With-AI
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  app-qdrant-visualizer:
+    build: ./app-Qdrant-Visualizer
+    ports:
+      - "18004:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  app-qdrant-analyzer:
+    build: ./app-Qqdrant-Analyzer
+    ports:
+      - "18005:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+
+  ###### Flow-2 - Begin ###################
+
+  dask-csv-worker-flow-1-Without-AI:
+    build:
+      context: ./dask-csv-worker-flow-1-Without-AI
+      dockerfile: Dockerfile
+    command: python reader.py
+    networks:
+      - exp-net
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+    depends_on:
+      - daskscheduler
+      - daskworker1
+      - daskworker2
+  text-vectorizer-flow-1-Without-AI:
+    build: ./text-vectorizer-flow-1-Without-AI
+    depends_on:
+      - rabbitmq
+      - daskscheduler
+      - qdrant
+    networks:
+      - exp-net
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  app-qdrant-analyzer-flow-1-Without-AI:
+    build: ./app-Qdrant-Analyzer-Flow-2
+    ports:
+      - "19005:8000"
+    networks:
+      - exp-net
+    depends_on:
+      - qdrant
+  ###### Flow-2 - End ###################
+
+  # spark-master:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-master
+  #   hostname: spark-master
+  #   ports:
+  #     - "17077:7077" # Spark master port
+  #     - "18080:8080" # Spark master Web UI
+  #   environment:
+  #     - SPARK_MODE=master
+  #     - SPARK_HISTORY_OPTS=-Dspark.eventLog.enabled=true -Dspark.eventLog.dir=/opt/spark-events
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
+
+  #   networks:
+  #     - exp-net
+
+  # spark-worker-1:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-worker-1
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "18081:8081" # Worker 1 Web UI
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
+
+  #   networks:
+  #     - exp-net
+
+  # spark-worker-2:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-worker-2
+  #   depends_on:
+  #     - spark-master
+  #   ports:
+  #     - "18082:8081" # Worker 2 Web UI
+  #   environment:
+  #     - SPARK_MODE=worker
+  #     - SPARK_MASTER_URL=spark://spark-master:7077
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
+
+  #   networks:
+  #     - exp-net
+
+  # spark-history:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-history
+  #   ports:
+  #     - "18084:18080" # Spark History Server Web UI
+  #   command: >
+  #     /opt/bitnami/spark/bin/spark-class
+  #     org.apache.spark.deploy.history.HistoryServer
+  #   environment:
+  #     - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark-events
+  #   volumes:
+  #     - /home/strsico/docker/shared/RareEvents/spark_logs:/opt/spark-events
+
+  #   networks:
+  #     - exp-net
+
+  # spark-history:
+  #   image: bitnami/spark:latest
+  #   container_name: spark-history
+  #   ports:
+  #     - "18084:18080"
+  #     - "18094:7074"
+  #   command: >
+  #     /opt/bitnami/spark/bin/spark-class
+  #     org.apache.spark.deploy.history.HistoryServer
+  #   environment:
+  #     - SPARK_HISTORY_OPTS=-Dspark.history.fs.logDirectory=/opt/spark-events
+  #     - SPARK_DAEMON_JAVA_OPTS=-javaagent:/opt/bitnami/spark/jars/jmx_prometheus_javaagent-0.20.0.jar=7074:/opt/bitnami/spark/conf/jmx-config.yaml
+  #   volumes:
+  #     - ./spark/conf/jmx-config.yaml:/opt/bitnami/spark/conf/jmx-config.yaml
+  #     - ./spark/ext-jars:/opt/bitnami/spark/ext-jars
+  #   networks:
+  #     - exp-net
+
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   ports:
+  #     - "19090:9090" # Accessible from host at http://localhost:19090
+  #   volumes:
+  #     - ./prometheus:/etc/prometheus
+  #   command:
+  #     - "--config.file=/etc/prometheus/prometheus.yml"
+  #   networks:
+  #     - exp-net
+
+  # grafana:
+  #   image: grafana/grafana
+  #   ports:
+  #     - "13000:3000"
+  #   networks:
+  #     - exp-net
+
+  # csv_reader:
+  #   build: ./csv_reader
+  #   container_name: csv_reader
+  #   depends_on:
+  #     - spark-master
+  #   environment:
+  #     - PYSPARK_PYTHON=python3
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents/data/ocorrencias.csv:/shared/data/ocorrencias.csv
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     # - /mnt/d/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
+
+  #     # - D:/DockerVolumes/privacy/RareEvents/output/ocorrencias_parquet:/shared/output/ocorrencias_parquet
+  #   command: tail -f /dev/null # Mantém o container "ligado"s
+  #   networks:
+  #     - exp-net
+
+  # parquet_reader:
+  #   build: ./parquet_reader
+  #   container_name: parquet-reader
+  #   depends_on:
+  #     - csv_reader
+  #   volumes:
+  #     # - D:/DockerVolumes/privacy/RareEvents:/shared
+  #     - /home/strsico/docker/shared/RareEvents/:/shared
+
+  #   networks:
+  #     - exp-net
+
+  # dask-csv-worker-flow-2-with-ai:
+  #   build:
+  #     context: ./dask-csv-worker-flow-2-with-ai
+  #     dockerfile: Dockerfile
+  #   command: python reader.py
+  #   volumes:
+  #     - D:/DockerVolumes/privacy/RareEvents/data:/data
+  #     - D:/DockerVolumes/privacy/RareEvents/output:/output
+  #   networks:
+  #     - exp-net
+  #   depends_on:
+  #     - daskscheduler
+  #     - daskworker1
+  #     - daskworker2
+
+networks:
+  exp-net:
+
+volumes:
+  ollama-data:
+  qdrant-data:

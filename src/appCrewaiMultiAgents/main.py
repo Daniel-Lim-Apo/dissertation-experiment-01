@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 # LLM_MODEL = os.getenv("LLM_MODEL", "llama3")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-minilm")
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ollama:11434")
 QDRANT_HOST = os.getenv("QDRANT_HOST", "qdrant")
 QDRANT_PORT = int(os.getenv("QDRANT_PORT", 6333))
 

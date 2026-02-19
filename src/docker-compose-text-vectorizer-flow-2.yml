@@ -1,0 +1,10 @@
+text-vectorizer-flow-2:
+  build: ./text-vectorizer-flow-1-Without-AI
+  depends_on:
+    - rabbitmq
+    - daskscheduler
+    - qdrant
+  networks:
+    - exp-net
+  environment:
+    - PYTHONUNBUFFERED=1

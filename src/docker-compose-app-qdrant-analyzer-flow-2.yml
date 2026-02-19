@@ -1,0 +1,8 @@
+app-qdrant-analyzer-flow-1-Without-AI:
+  build: ./app-Qdrant-Analyzer-Flow-2
+  ports:
+    - "19005:8000"
+  networks:
+    - exp-net
+  depends_on:
+    - qdrant
