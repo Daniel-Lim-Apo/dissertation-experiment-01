@@ -14,6 +14,8 @@ This project implements the experimental case study for the dissertation: **"Pri
 
 It explores state-of-the-art techniques for privacy preservation in text processing, utilizing Semantic Similarity, Vector Databases (Qdrant), and AI Agents (LLMs) to detect rare events and mitigate re-identification risks.
 
+This experiment concludes by delivering a detailed-architected privacy-preserving text processing pipeline that is fully containerized with Docker, decoupled into modular components, and designed for scalable execution. The resulting architecture centers on text similarity analysis, operationalizing semantic similarity search with a vector database (Qdrant) and LLM-based agents to characterize how rare or highly distinctive texts behave within a dataset and to support mitigation strategies that reduce re-identification risk. The pipeline is engineered to run end-to-end with local language models in offline environments, enabling privacy-sensitive deployments that remain functional even when disconnected from the internet while preserving reproducibility and extensibility for future experiments.
+
 ## Methodology
 
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology.png)
