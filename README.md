@@ -17,27 +17,37 @@ It explores state-of-the-art techniques for privacy preservation in text process
 This experiment concludes by delivering a detailed-architected privacy-preserving text processing pipeline that is fully containerized with Docker, decoupled into modular components, and designed for scalable execution. The resulting architecture centers on text similarity analysis, operationalizing semantic similarity search with a vector database (Qdrant) and LLM-based agents to characterize how rare or highly distinctive texts behave within a dataset and to support mitigation strategies that reduce re-identification risk. The pipeline is engineered to run end-to-end with local language models in offline environments, enabling privacy-sensitive deployments that remain functional even when disconnected from the internet while preserving reproducibility and extensibility for future experiments.
 
 ## Methodology
-
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-2-With-AI.png)
+### Flow-1-Without-AI
+![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-1-Without-AI-Arrow.png)
+### Flow-2-With-AI
+![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-2-With-AI-Arrow.png)
+
+
 
 The experimental case study follows a 6-step AI-driven data processing pipeline:
 
-1. **Data Ingestion**
-   - [csv_reader](src/csv_reader) / [parquet_reader](src/parquet_reader): Services responsible for gathering data from various sources (CSV, Parquet) to feed the pipeline.
+1. **Base Flow-1 and Flow-2**
+   - [ollama](src/ollama): Ollama with a local LLM model. Use a LLM model inside it or just use another api with LLM and adjust the codes for that.
+   - [daskscheduler](src/daskscheduler): Daskscheduler receives a task graph from a client and distributes those tasks to workers in a parallel computing environment.
+   - [daskworker1 and daskworker2](src/daskworker): Individual worker processes that execute the tasks assigned by the scheduler.
+   - [rabbitmq](src/rabbitmq): Message broker. Middleware that decouples senders and receivers by handling routing, buffering, delivery, and reliability. 
+   Traffic processing bursts become queue depth instead of outages. Consumers scale horizontally to catch up as they have free resources to process the tasks.
+   - [qdrant](src/qdrant): QDrant vector database to persist and support visual analyzing of the result text similarity.
 
-2. **Parallelization for Reading**
-   - [dask-csv-worker-flow-1-Without-AI](src/dask-csv-worker-flow-2): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
+2. **Data Ingestion - Parallelization for Reading**
+   - [dask-csv-worker-flow-1-without-ai](src/dask-csv-worker-flow-1-without-ai): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
+   - [dask-csv-worker-flow-2-with-ai](src/dask-csv-worker-flow-2-with-ai): Utilizes Dask for parallel data processing to speed up the reading and initial handling of large datasets.
+     
 
-3. **AI Agents for Summarization**
+3. **AI Agents for Summarization (Just flow-2-with-ai) **
    - [appCrewaiMultiAgents](src/appCrewaiMultiAgents): Deploys a crew of AI agents (using CrewAI) to synthesize and summarize textual data.
+   - [text-processor-flow-2-with-ai](src/text-processor-flow-2-with-ai): Process the texts with a goal of summarize them.
 
-4. **AI Agents in Docker Containers**
-   - [docker-compose.yml](src/docker-compose.yml): The entire multi-agent system and microservices are containerized and orchestrated for scalability and ease of deployment.
-
-5. **Vectorization with Parallel Computing**
+4. **Vectorization with Parallel Computing**
    - [text-vectorizer-flow-2-With-AI](src/text-vectorizer-flow-2-With-AI): Converts processed text into high-dimensional vectors using parallel computing techniques for efficient storage in Qdrant.
 
-6. **Rare Events Detection**
+5. **Similar and Rare Events Analisys**
    - [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2): Identifies rare events or outliers within the vectorized data stored in Qdrant.
 
 ## Architecture
