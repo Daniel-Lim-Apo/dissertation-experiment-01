@@ -18,12 +18,13 @@ This experiment concludes by delivering a detailed-architected privacy-preservin
 
 ## Methodology
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-2-With-AI.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
 ### Flow-1-Without-AI
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-1-Without-AI-Arrow.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
 ### Flow-2-With-AI
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-2-With-AI-Arrow.png)
-
-
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
 
 The experimental case study follows a 6-step AI-driven data processing pipeline:
 
