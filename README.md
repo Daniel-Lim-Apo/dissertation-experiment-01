@@ -208,7 +208,7 @@ This command does a forced cleanup of unused Docker resources on your system.
     (mapped to `/data` in the container). See [DATA_FORMAT.md](DATA_FORMAT.md) for the expected JSON format and instructions on generating synthetic test data.
 
 3.  **Execution**:
-    - For the `Flow 1 - Without AI`
+    - For both Flows `Flow 1 and Flow 2`
       - Start the base:
         - If you do not have changes you can just skip the build command lines:
         - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
@@ -225,6 +225,7 @@ This command does a forced cleanup of unused Docker resources on your system.
         - See [dasktest/README.md](src/dasktest/README.md)
         - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph)
 
+    - For the `Flow 1 - Without AI`
       - then the csv data ingestion:
         - `docker compose build dask-csv-worker-flow-1-without-ai`
         - `docker compose up dask-csv-worker-flow-1-without-ai -d`
@@ -238,15 +239,6 @@ This command does a forced cleanup of unused Docker resources on your system.
         - Access the Qdrant dashboard at `http://localhost:6333/dashboard` to verify that collections are created and vectors are indexed.
 
     - For the `Flow 2 - With AI`
-      - Start the base:
-        - `docker-compose build ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq`
-        - `docker-compose up ollama qdrant daskscheduler daskworker1 daskworker2 rabbitmq -d`
-
-      - If you want know if Dask is working:
-        - `docker compose build dasktest`
-        - `docker compose up dasktest -d`
-        - See [dasktest/README.md](src/dasktest/README.md)
-        - You can see the dask dashboard at `http://localhost:18787` during the processing (status, workers, tasks, graph).
 
       - then the csv data ingestion:
         - First prepare the data as explained in the Dataset Preparation section.
