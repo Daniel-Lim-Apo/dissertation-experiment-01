@@ -51,16 +51,80 @@ The experimental case study follows a 6-step AI-driven data processing pipeline:
 5. **Similar and Rare Events Analisys**
    - [app-Qdrant-Analyzer-Flow-2](src/app-Qdrant-Analyzer-Flow-2): Identifies rare events or outliers within the vectorized data stored in Qdrant.
 
-## Architecture
+## Architecture Flow 1 Without AI
 
 The system is built as a microservices architecture orchestrated by Docker Compose.
 
 ```mermaid
 graph TD
 
-    subgraph Ingest Data
-        dask-csv-worker-flow-1-without-ai
-        Qdrant[("Qdrant Vector DB")]
+    subgraph Data Ingestion
+        dask-csv-worker-flow-1-without-ai[dask-csv-worker-flow-1-without-ai]
+        dask-csv-client-flow-1-without-ai[dask-csv-client-flow-1-without-ai]
+    end
+
+    subgraph "Dask (Parallel Computing)"
+        DaskScheduler["Dask Distributed Cluster Scheduler"]
+        DaskWorker1["Dask Worker 1"]
+        DaskWorker2["Dask Worker 2"]
+    end
+
+    subgraph "Dask (Test)"
+        DaskTest["Dask Test"]
+    end
+    
+    subgraph "RabbitMQ - Message Broker"
+        QUEUEocorrencias_historico_collection_flow_1_without_ai[(Queue: ocorrencias_historico_collection_flow_1_without_ai)]
+    end
+
+    subgraph "Qdrant - Vector DataBase"
+        ocorrencias_historico_vectorized[(Collection: ocorrencias_historico_vectorized)]
+        
+    end
+
+    subgraph "Text Vectorizer"
+        text-vectorizer-flow-1-without-ai["text-vectorizer-flow-1-without-ai"]
+        SentenceTransformer["Sentence Transformer all-MiniLM-L6-v2"]
+        SentenceTransformerDaskClient-flow-1-without-ai["Dask Client Sentence Transformer-flow-1-without-ai"]
+    end
+
+    subgraph "Persistence - Data Volumes"
+        CsvFile["CSV File"]
+    end
+
+    DaskScheduler <--> DaskWorker1
+    DaskScheduler <--> DaskWorker2
+
+    DaskTest --> DaskScheduler
+
+    CsvFile --> dask-csv-worker-flow-1-without-ai
+
+    dask-csv-worker-flow-1-without-ai <--> dask-csv-client-flow-1-without-ai
+    dask-csv-client-flow-1-without-ai <--> DaskScheduler
+
+    dask-csv-worker-flow-1-without-ai --> QUEUEocorrencias_historico_collection_flow_1_without_ai
+
+    QUEUEocorrencias_historico_collection_flow_1_without_ai --> text-vectorizer-flow-1-without-ai
+    text-vectorizer-flow-1-without-ai <--> SentenceTransformer
+
+    SentenceTransformer <--> SentenceTransformerDaskClient-flow-1-without-ai
+
+    SentenceTransformerDaskClient-flow-1-without-ai <--> DaskScheduler
+
+    text-vectorizer-flow-1-without-ai --> ocorrencias_historico_vectorized
+
+```
+
+## Architecture Flow 2 With AI
+
+The system is built as a microservices architecture orchestrated by Docker Compose.
+
+```mermaid
+graph TD
+
+    subgraph Data Ingestion
+        dask-csv-worker-flow-2-with-ai[dask-csv-worker-flow-2-with-ai]
+        dask-csv-client-flow-2-with-ai[dask-csv-client-flow-2-with-ai]
     end
 
     subgraph "AI"
@@ -71,41 +135,73 @@ graph TD
         CrewAI["CrewAI Multi-Agents"]
         CrewAIAgent1["Agent-1"]
         CrewAIAgent2["Agent-2"]
+        CrewAIAgent3["Agent-3"]
     end
 
     subgraph "Dask (Parallel Computing)"
         DaskScheduler["Dask Distributed Cluster Scheduler"]
         DaskWorker1["Dask Worker 1"]
         DaskWorker2["Dask Worker 2"]
-        CrewAI["CrewAI Multi-Agents"]
     end
 
     subgraph "Dask (Test)"
         DaskTest["Dask Test"]
     end
     
-    subgraph MessageBroker
-        R[("RabbitMQ")]
-    end
-    
-
-    subgraph VectorDataBase
-        Qdrant[("Qdrant Vector DB")]
+    subgraph "RabbitMQ - Message Broker"
+        QUEUEoriginal_text_messages[(Queue:  original_text_messages)]
+        QUEUEsummary_text_messages[(Queue:  summary_text_messages)]
     end
 
-    subgraph "Docker Environment"
-        Docker["Docker Compose"]
-        Net["exp-net Network"]
+    subgraph "Qdrant - Vector DataBase"
+        ocorrencias_resumo_collection[(ocorrencias_resumo_collection)]
     end
 
-    subgraph Persistence
-        Vol["Data Volumes"]
+    subgraph "Text Processor"
+        text-processor-flow-2-with-ai["text-processor-flow-2-with-ai"]
     end
-   
 
-    DaskTest --> DaskScheduler
+    subgraph "Text Vectorizer"
+        text-vectorizer-flow-2-with-ai["text-vectorizer-flow-2-with-ai"]
+        SentenceTransformer["Sentence Transformer all-MiniLM-L6-v2"]
+        SentenceTransformerDaskClient-flow-2-with-ai["Dask Client Sentence Transformer-flow-2-with-ai"]
+    end
+
+    subgraph "Persistence - Data Volumes"
+        CsvFile["CSV File"]
+    end
+
     DaskScheduler <--> DaskWorker1
     DaskScheduler <--> DaskWorker2
+
+    DaskTest --> DaskScheduler
+
+    CrewAI <--> CrewAIAgent1
+    CrewAI <--> CrewAIAgent2
+    CrewAI <--> CrewAIAgent3
+
+    CrewAIAgent1 <--> Ollama
+    CrewAIAgent2 <--> Ollama
+    CrewAIAgent3 <--> Ollama
+
+    CsvFile --> dask-csv-worker-flow-2-with-ai
+
+    dask-csv-worker-flow-2-with-ai <--> dask-csv-client-flow-2-with-ai
+    dask-csv-client-flow-2-with-ai <--> DaskScheduler
+
+    dask-csv-worker-flow-2-with-ai --> QUEUEoriginal_text_messages
+
+    QUEUEoriginal_text_messages --> text-processor-flow-2-with-ai 
+    text-processor-flow-2-with-ai <--> CrewAI
+    text-processor-flow-2-with-ai --> QUEUEsummary_text_messages
+    QUEUEsummary_text_messages --> text-vectorizer-flow-2-with-ai
+    text-vectorizer-flow-2-with-ai <--> SentenceTransformer
+
+    SentenceTransformer <--> SentenceTransformerDaskClient-flow-2-with-ai
+    SentenceTransformerDaskClient-flow-2-with-ai <--> DaskScheduler
+
+    text-vectorizer-flow-2-with-ai --> ocorrencias_resumo_collection
+
 ```
 
 ## Key Components
