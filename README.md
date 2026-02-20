@@ -368,16 +368,16 @@ Detailed documentation for each service in the `src` folder:
 
 ### Core Services
 
-- [app](src/app/README.md) - FastAPI service for text processing with Ollama and Qdrant
 - [appCrewaiMultiAgents](src/appCrewaiMultiAgents/README.md) - Multi-agent AI system using CrewAI
 - [appVectorApi](src/appVectorApi/README.md) - Vector API for Qdrant operations
-- [text-processor-flow-2-With-AI](src/text-processor-flow-2-With-AI/README.md) - RabbitMQ consumer for AI-based text processing
 
 ### Data Ingestion
 
-- [csv_reader](src/csv_reader/README.md) - Spark-based CSV to Parquet converter
-- [parquet_reader](src/parquet_reader/README.md) - Parquet file reader
-- [dask-csv-worker-flow-1-Without-AI](src/dask-csv-worker-flow-2/README.md) - Dask-based parallel CSV reader
+- [dask-csv-worker-flow-1-without-ai](src/dask-csv-worker-flow-1-without-ai/README.md) - Specialized CSV worker. Dask-based parallel CSV reader.
+- [dask-csv-worker-flow-2-with-ai](src/dask-csv-worker-flow-2-with-ai/README.md) - Specialized CSV worker. Dask-based parallel CSV reader.
+
+### Text Processing with AI (Flow-2)
+- [text-processor-flow-2-With-AI](src/text-processor-flow-2-With-AI/README.md) - RabbitMQ consumer for AI-based text processing
 
 ### Vectorization
 
@@ -395,16 +395,12 @@ Detailed documentation for each service in the `src` folder:
 
 - [daskscheduler](src/daskscheduler/README.md) - Dask cluster scheduler
 - [daskworker](src/daskworker/README.md) - General Dask worker
-- [dask-csv-worker-flow-2-with-ai](src/dask-csv-worker-flow-2-with-ai/README.md) - Specialized CSV worker
 - [dasktest](src/dasktest/README.md) - Dask cluster connectivity test
-- [spark](src/spark/README.md) - Apache Spark cluster
 - [dask](src/dask/README.md) - Flexible library for parallel computing in Python that scales from single machines to large clusters
 
-### Infrastructure
+### LLM
 
-- [ollama](src/ollama/README.md) - **Ollama** is a local runtime for running Large Language Models (LLMs) on your own infrastructure. It provides a simple API for text generation and embeddings, allowing you to use models like Llama3 without relying on external cloud services
-- [grafana](src/grafana/README.md) - **Grafana** is an open-source analytics and monitoring platform that provides interactive display of dashboards and metrics. It connects to Prometheus to display real-time metrics, system performance, and resource usage through customizable charts and graphs
-- [prometheus](src/prometheus/README.md) - **Prometheus** is an open-source monitoring and alerting toolkit that collects and stores metrics as time-series data. It scrapes metrics from configured services at specified intervals and provides a query language (PromQL) for data analysis
+- [ollama](src/ollama/README.md) - **Ollama** is a local runtime for running Large Language Models (LLMs) on your own infrastructure. It provides a simple API for text generation and embeddings, allowing you to use models like Llama3 without relying on external cloud services.
 
 ## Citation
 
