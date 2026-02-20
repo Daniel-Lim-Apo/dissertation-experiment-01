@@ -57,37 +57,55 @@ The system is built as a microservices architecture orchestrated by Docker Compo
 
 ```mermaid
 graph TD
-    subgraph Infrastructure
-        Docker["Docker Compose"]
-        Net["exp-net Network"]
-        R[("RabbitMQ")]
-    end
 
-    subgraph Storage
+    subgraph Ingest Data
+        dask-csv-worker-flow-1-without-ai
         Qdrant[("Qdrant Vector DB")]
-        Vol["Data Volumes"]
     end
 
-    subgraph "AI and Processing"
+    subgraph "AI"
         Ollama["Ollama (LLM)"]
-        Dask["Dask Distributed Cluster"]
+    end
+
+    subgraph "CrewAI Multi AI-Agents"
+        CrewAI["CrewAI Multi-Agents"]
+        CrewAIAgent1["Agent-1"]
+        CrewAIAgent2["Agent-2"]
+    end
+
+    subgraph "Dask (Parallel Computing)"
+        DaskScheduler["Dask Distributed Cluster Scheduler"]
+        DaskWorker1["Dask Worker 1"]
+        DaskWorker2["Dask Worker 2"]
         CrewAI["CrewAI Multi-Agents"]
     end
 
-    subgraph "Application Layer"
-        API["appVectorApi (FastAPI)"]
-        Web["Visualizers and Analyzers"]
-        Ingest["Text Vectorizers"]
+    subgraph "Dask (Test)"
+        DaskTest["Dask Test"]
+    end
+    
+    subgraph MessageBroker
+        R[("RabbitMQ")]
+    end
+    
+
+    subgraph VectorDataBase
+        Qdrant[("Qdrant Vector DB")]
     end
 
-    Docker --> Net
-    API --> Qdrant
-    API --> Dask
-    Ingest --> R
-    Ingest --> Qdrant
-    CrewAI --> Ollama
-    CrewAI --> Qdrant
-    Dask --> Vol
+    subgraph "Docker Environment"
+        Docker["Docker Compose"]
+        Net["exp-net Network"]
+    end
+
+    subgraph Persistence
+        Vol["Data Volumes"]
+    end
+   
+
+    DaskTest --> DaskScheduler
+    DaskScheduler <--> DaskWorker1
+    DaskScheduler <--> DaskWorker2
 ```
 
 ## Key Components
