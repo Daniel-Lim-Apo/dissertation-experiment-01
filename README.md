@@ -242,12 +242,27 @@ graph TD
     The services in `src/docker-compose.yml` are configured to use specific host paths for data and output (e.g., `D:/DockerVolumes/privacy/RareEvents/data`).
 
     > [!IMPORTANT]
-    > You must have these directories available on your host machine or create a new folder structure to use for the data. If you use a different path, you **must update all volume mappings** in [docker-compose.yml](src/docker-compose.yml) to match your local setup:
+    > You must have these directories available on your host machine or create a new folder structure to use for the data. If you use a different path, you **must update all volume mappings** in [docker-compose.yml](src/docker-compose.yml) to match your local setup (search for 'volumes:' in the file docker-compose.yml and customize the paths):
 
     ```yaml
+    Eg. of volumes, customize yours:
     volumes:
-      - /your/local/path/data:/data
-      - /your/local/path/output:/output
+      - qdrant-data:/qdrant/storage
+
+    volumes:
+      - qdrant-data:/qdrant/storage
+
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/data:/data
+      - D:/DockerVolumes/privacy/RareEvents/output:/output
+
+    volumes:
+      - D:/DockerVolumes/privacy/RareEvents/RabbitMQ:/var/lib/rabbitmq
+
+    volumes:
+      ollama-data:
+      qdrant-data:
+
     ```
 
 3.  **If you just want the status of the containers managed by the local docker-compose file, use:**
