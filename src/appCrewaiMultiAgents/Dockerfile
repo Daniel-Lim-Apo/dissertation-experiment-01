@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Set environment variables to disable telemetry
 ENV CREWAI_DISABLE_TELEMETRY=true
 ENV OTEL_SDK_DISABLED=true
-ENV OPENAI_API_KEY = none
+ENV OPENAI_API_KEY=none
 
 
 COPY . .

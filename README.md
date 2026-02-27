@@ -329,6 +329,9 @@ This command does a forced cleanup of unused Docker resources on your system.
         - If you do not have changes you can just skip the build command lines:
         - `docker-compose build ollama appcrewaimultiagents`
         - `docker-compose up ollama appcrewaimultiagents -d`
+        - `docker compose up -d ollama ollama-init`
+          - To Verify ollama model:
+            - `docker compose exec ollama ollama list`
 
       - If you want know if Dask is working:
         - `docker compose build dasktest`

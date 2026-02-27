@@ -25,7 +25,7 @@ import time
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# LLM_MODEL = os.getenv("LLM_MODEL", "llama3")
+LLM_MODEL = os.getenv("LLM_MODEL", "llama3.1:latest")
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-minilm")
 OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ollama:11434")
 QDRANT_HOST = os.getenv("QDRANT_HOST", "qdrant")
