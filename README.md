@@ -19,6 +19,25 @@ This experiment concludes by delivering a detailed-architected privacy-preservin
 ## Methodology
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-2-With-AI.png)
 (Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
+
+## Data Ingestion
+![Data Ingestion](img/steps/01-Data-Ingestion.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
+
+## Parallel Computing
+![Parallel Computing](img/steps/02-Parallel-computing-with-dask.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
+
+## AI Multi-Agents with CrewAI
+![AI Multi-Agents with CrewAI](img/steps/03-01-AI-Multi-Agente-with-CrewAI.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
+![CrewAI Agents](img/steps/03-02-AI-Multi-Agente-with-CrewAI.png)
+
+## Vectorization
+![Vectorization](img/steps/04-Vectorization-Process.png)
+(Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
+
+## Processing Flows
 ### Flow-1-Without-AI
 ![AI-Driven Data Processing Methodology](img/Case-Study-Methodology-Flow-1-Without-AI-Arrow.png)
 (Figure created by the author using [Napkin AI](https://app.napkin.ai "Open Napkin AI"))
